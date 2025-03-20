@@ -5,17 +5,17 @@ import { ThemeProvider } from '@/contexts/ThemeContext';
 import { DrawerProvider } from '@/contexts/DrawerContext';
 
 export default function AdminLayout({ children }: Readonly<{ children: ReactNode }>) {
-  return (
-    <ThemeProvider>
-      <DrawerProvider>
-      <div className="flex h-screen bg-white">
-        <Sidebar />
-        <div className="flex-1 overflow-auto">
-          <AdminHeader />
-          <main className="p-6">{children}</main>
-        </div>
-      </div>
-      </DrawerProvider>
-    </ThemeProvider>
-  );
+	return (
+		<ThemeProvider>
+			<DrawerProvider>
+				<div className="flex h-screen bg-white">
+					<Sidebar />
+					<div className="flex-1 overflow-auto">
+						<AdminHeader />
+						<main className="p-6">{children}</main>
+					</div>
+				</div>
+			</DrawerProvider>
+		</ThemeProvider>
+	);
 }

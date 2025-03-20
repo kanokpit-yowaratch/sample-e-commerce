@@ -16,11 +16,7 @@ export const DrawerProvider = ({ children }: { children: React.ReactNode }) => {
 
 	const contextValue = useMemo(() => ({ isDrawerOpen, toggleDrawer }), [isDrawerOpen, toggleDrawer]);
 
-	return (
-		<DrawerContext.Provider value={contextValue}>
-			{children}
-		</DrawerContext.Provider>
-	)
+	return <DrawerContext.Provider value={contextValue}>{children}</DrawerContext.Provider>;
 };
 
 // 3. Hook สำหรับเรียกใช้ Context ใน Function Component
