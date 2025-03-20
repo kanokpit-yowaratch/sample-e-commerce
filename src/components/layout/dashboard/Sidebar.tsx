@@ -1,14 +1,16 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Home, Users, LogOut, Rocket, CircleDollarSign, Sun, Moon } from 'lucide-react';
+import { Home, Users, LogOut, Rocket, CircleDollarSign, Sun, Moon, Menu } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useDrawer } from '@/contexts/DrawerContext';
 
 function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
+  const { isDrawerOpen, toggleDrawer } = useDrawer();
   const [activeBg, setActiveBg] = useState(theme === 'dark' ? 'bg-fuchsia-900' : 'bg-sky-600');
   const [activeSection, setActiveSection] = useState(
     pathname.split('/').filter(Boolean).pop() ?? ''
@@ -25,10 +27,13 @@ function Sidebar() {
 
   return (
     <div
-      className={`relative ${theme === 'dark' ? 'bg-fuchsia-950' : 'bg-sky-500'} h-screen z-20`}>
+      className={`fixed ${theme === 'dark' ? 'bg-fuchsia-950' : 'bg-sky-500'} lg:relative lg:translate-x-0 transition-transform duration-300 ease-in-out ${isDrawerOpen ? 'translate-x-0' : '-translate-x-full'} w-64 h-screen z-20`}>
       <div className="p-4">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-md font-bold text-white">Sample E-Commerce</h2>
+          <button onClick={toggleDrawer} className="lg:hidden">
+						<Menu className="w-5 h-5 text-white" />
+					</button>
         </div>
 
         <nav className="space-y-2">
