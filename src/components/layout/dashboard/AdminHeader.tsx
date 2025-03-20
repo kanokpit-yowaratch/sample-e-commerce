@@ -3,10 +3,13 @@
 import React from 'react';
 import { Bell } from 'lucide-react';
 import NextImage from 'next/image';
+import { useTheme } from '@/contexts/ThemeContext';
 
 function AdminHeader() {
+  const {theme} = useTheme();
+
   return (
-    <header className={`bg-fuchsia-950 sticky top-0 z-10`}>
+    <header className={`${theme === 'dark' ? 'bg-fuchsia-950' : 'bg-sky-500'} sticky top-0 z-10`}>
       <div className="flex items-center justify-between p-4">
 
         <div className="flex items-center space-x-4 ml-auto">
