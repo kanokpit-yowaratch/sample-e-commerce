@@ -1,21 +1,21 @@
-import { NextRequest, NextResponse } from "next/server";
-import { writeFile } from "fs/promises";
-import path, { join } from "path";
-import { ApiError } from "@/lib/errors";
-import prisma from "@/lib/prisma";
-import { ImageType, ProductImage } from "@prisma/client";
+import { NextRequest, NextResponse } from 'next/server';
+import { writeFile } from 'fs/promises';
+import path, { join } from 'path';
+import { ApiError } from '@/lib/errors';
+import prisma from '@/lib/prisma';
+import { ImageType, ProductImage } from '@prisma/client';
 import { getProductById } from '@/lib/product';
 
 export async function POST(req: NextRequest) {
 	const formData = await req.formData();
-	const file = formData.get("file") as File;
+	const file = formData.get('file') as File;
 	const pId = formData.get('productId') as string;
 	const imgType = formData.get('imageType') as string;
 	const productId = parseInt(pId);
 
 	try {
 		if (!file) {
-			throw new ApiError("No file uploaded", 400);
+			throw new ApiError('No file uploaded', 400);
 		}
 
 		const bytes = await file.arrayBuffer();
@@ -23,12 +23,12 @@ export async function POST(req: NextRequest) {
 
 		const fileExtension = path.extname(file.name);
 		const fileName = `product-${Date.now()}${fileExtension}`;
-		const filePath = join(process.cwd(), "public/uploads", fileName);
+		const filePath = join(process.cwd(), 'public/uploads', fileName);
 		await writeFile(filePath, buffer);
 
 		const product = await getProductById(productId);
 		if (!product) {
-			throw new ApiError("Not Found product", 404);
+			throw new ApiError('Not Found product', 404);
 		}
 
 		let pImage: ProductImage;

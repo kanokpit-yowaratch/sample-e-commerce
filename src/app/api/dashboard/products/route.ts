@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from "@/lib/prisma";
+import prisma from '@/lib/prisma';
 import { ApiError } from '@/lib/errors';
 import { SortOrder } from '@/types/common';
 import { ImageType } from '@prisma/client';
@@ -41,8 +41,8 @@ export async function GET(req: NextRequest) {
 			},
 			where: {
 				imageType: ImageType.cover,
-			}
-		}
+			},
+		},
 	};
 
 	const orderByItem = { createdAt: sort };
@@ -90,7 +90,7 @@ export async function GET(req: NextRequest) {
 		if (error instanceof ApiError) {
 			return NextResponse.json({ error: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+		return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
@@ -112,6 +112,6 @@ export async function POST(req: NextRequest) {
 		if (error instanceof ApiError) {
 			return NextResponse.json({ error: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ error: "Failed to create product" }, { status: 500 });
+		return NextResponse.json({ error: 'Failed to create product' }, { status: 500 });
 	}
 }

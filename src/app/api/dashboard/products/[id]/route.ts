@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ApiError } from '@/lib/errors';
-import prisma from "@/lib/prisma";
+import prisma from '@/lib/prisma';
 import { IdParamProps } from '@/types/common';
 import { getProductById } from '@/lib/product';
 
@@ -10,7 +10,7 @@ export async function GET(req: NextRequest, { params }: IdParamProps) {
 	try {
 		const product = await getProductById(parseInt(id));
 		if (!product) {
-			throw new ApiError("Not Found product", 404);
+			throw new ApiError('Not Found product', 404);
 		}
 		return NextResponse.json(product, { status: 200 });
 	} catch (error) {
@@ -18,7 +18,7 @@ export async function GET(req: NextRequest, { params }: IdParamProps) {
 		if (error instanceof ApiError) {
 			return NextResponse.json({ error: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+		return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
@@ -31,7 +31,7 @@ export async function PUT(req: NextRequest, { params }: IdParamProps) {
 	try {
 		const product = await getProductById(productId);
 		if (!product) {
-			throw new ApiError("Not Found product", 404);
+			throw new ApiError('Not Found product', 404);
 		}
 
 		const productUpdate = await prisma.product.update({
@@ -44,7 +44,7 @@ export async function PUT(req: NextRequest, { params }: IdParamProps) {
 		if (error instanceof ApiError) {
 			return NextResponse.json({ error: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+		return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
@@ -59,14 +59,14 @@ export async function PATCH(req: Request, { params }: IdParamProps) {
 				where: { id: productId },
 				data: { name, price: Number(price) },
 			}),
-			{ status: 200 }
+			{ status: 200 },
 		);
 	} catch (error) {
 		console.log(error);
 		if (error instanceof ApiError) {
 			return NextResponse.json({ error: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+		return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
@@ -78,19 +78,19 @@ export async function DELETE(req: NextRequest, { params }: IdParamProps) {
 	try {
 		const product = await getProductById(parseInt(id));
 		if (!product) {
-			throw new ApiError("Not Found product", 404);
+			throw new ApiError('Not Found product', 404);
 		}
 
 		await prisma.product.delete({
 			where: { id: productId },
 		});
 
-		return NextResponse.json({ message: "Deleted successfully" }, { status: 200 });
+		return NextResponse.json({ message: 'Deleted successfully' }, { status: 200 });
 	} catch (error) {
 		console.log(error);
 		if (error instanceof ApiError) {
 			return NextResponse.json({ error: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+		return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
 	}
 }
