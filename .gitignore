@@ -20,6 +20,11 @@
 # production
 /build
 
+# sources
+/public/uploads
+/prisma/migrations
+/prisma/dev.db
+
 # misc
 .DS_Store
 *.pem

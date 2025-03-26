@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          Int    @id @default(autoincrement())
+  name        String @unique
+  description String
+  price       Float
+
+  category   Category @relation("ProductCategory", fields: [categoryId], references: [id])
+  categoryId Int
+
+  stocks Stock[]        @relation("ProductStock")
+  images ProductImage[] @relation("ProductImage")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  products Product[] @relation("ProductCategory")
+}
+
+model Stock {
+  id       Int @id @default(autoincrement())
+  quantity Int
+
+  product   Product @relation("ProductStock", fields: [productId], references: [id])
+  productId Int
+
+  lastStocked DateTime @default(now()) @updatedAt
+}
+
+model ProductImage {
+  id        Int       @id @default(autoincrement())
+  imageType ImageType @default(thumbnail)
+  filePath  String    @unique
+
+  product   Product @relation("ProductImage", fields: [productId], references: [id])
+  productId Int
+
+  updatedAt DateTime @default(now())
+}
+
+enum ImageType {
+  cover
+  thumbnail
+}
