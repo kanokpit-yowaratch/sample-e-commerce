@@ -19,19 +19,19 @@ export type PaginationParams = {
 	page: number;
 	perPage: number;
 	search?: string;
-}
+};
 
 export type Pagination = {
 	pagination: {
 		total: number;
 		page: number;
 		perPage: number;
-	}
-}
+	};
+};
 
 export type PaginationResponse<T> = Pagination & {
 	data: T[];
-}
+};
 
 export type PaginationComponentProps = {
 	currentPage: number;
@@ -40,4 +40,4 @@ export type PaginationComponentProps = {
 	totalItems: number;
 	setCurrentPage: (page: number) => void;
 	setRowsPerPage: (size: number) => void;
-}
+};

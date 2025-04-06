@@ -1,3 +1,3 @@
-import { Category } from "@prisma/client";
+import { Category } from '@prisma/client';
 
-export type CategoryCreate = Pick<Category, "name">;
+export type CategoryCreate = Pick<Category, 'name'>;
