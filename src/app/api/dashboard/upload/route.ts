@@ -31,27 +31,24 @@ export async function POST(req: NextRequest) {
 			throw new ApiError('Not Found product', 404);
 		}
 
-		let pImage: ProductImage;
-
 		const imageType = imgType === 'cover' ? ImageType.cover : ImageType.thumbnail;
 
-		const productImage = await prisma.productImage.findFirst({
+		const oldCover = await prisma.productImage.findFirst({
 			where: { productId, imageType },
 		});
-		if (!productImage) {
-			pImage = await prisma.productImage.create({
-				data: {
-					productId,
-					filePath: `public/uploads/${fileName}`,
-					imageType,
-				},
-			});
-		} else {
-			pImage = await prisma.productImage.update({
-				where: { id: productImage.id },
-				data: { filePath: `public/uploads/${fileName}` },
+		if (oldCover) {
+			await prisma.productImage.delete({
+				where: { id: oldCover.id },
 			});
 		}
+
+		const pImage: ProductImage = await prisma.productImage.create({
+			data: {
+				productId,
+				filePath: `/uploads/${fileName}`,
+				imageType,
+			},
+		});
 
 		return NextResponse.json({ data: pImage }, { status: 200 });
 	} catch (error) {

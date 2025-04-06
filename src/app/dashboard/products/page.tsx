@@ -1,7 +1,8 @@
 import React from 'react';
+import ProductList from '@/components/dashboard/product/List';
 
 function page() {
-	return <div>Admin products...</div>;
+	return <ProductList />;
 }
 
 export default page;

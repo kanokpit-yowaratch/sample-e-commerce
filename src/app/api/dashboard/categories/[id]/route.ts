@@ -66,6 +66,14 @@ export async function DELETE(req: NextRequest, { params }: IdParamProps) {
 	const categoryId = parseInt(id);
 
 	try {
+		const category = await prisma.category.findUnique({
+			where: { id: categoryId },
+		});
+
+		if (!category) {
+			throw new ApiError('Category not found', 400);
+		}
+
 		await prisma.category.delete({
 			where: { id: categoryId },
 		});

@@ -10,12 +10,16 @@
 		"format": "npx prettier . --write"
 	},
 	"dependencies": {
+		"@hookform/resolvers": "^5.0.1",
 		"@prisma/client": "^6.5.0",
+		"@tanstack/react-query": "^5.71.10",
 		"lucide-react": "^0.482.0",
 		"next": "15.2.1",
 		"prisma": "^6.5.0",
 		"react": "^19.0.0",
-		"react-dom": "^19.0.0"
+		"react-dom": "^19.0.0",
+		"react-hook-form": "^7.55.0",
+		"zod": "^3.24.2"
 	},
 	"devDependencies": {
 		"@eslint/eslintrc": "^3",

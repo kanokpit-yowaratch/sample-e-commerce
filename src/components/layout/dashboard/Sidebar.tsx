@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Home, Users, LogOut, Rocket, CircleDollarSign, Sun, Moon, Menu } from 'lucide-react';
+import { Home, Users, LogOut, Rocket, CircleDollarSign, Sun, Moon, Menu, Boxes } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useDrawer } from '@/contexts/DrawerContext';
@@ -38,6 +38,7 @@ function Sidebar() {
 					{[
 						{ icon: Home, label: 'Dashboard', id: '' },
 						{ icon: Users, label: 'Users', id: 'users' },
+						{ icon: Boxes, label: 'Categories', id: 'categories' },
 						{ icon: Rocket, label: 'Products', id: 'products' },
 						{ icon: CircleDollarSign, label: 'Orders', id: 'orders' },
 					].map(({ icon: Icon, label, id }) => (

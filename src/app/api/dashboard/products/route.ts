@@ -53,7 +53,6 @@ export async function GET(req: NextRequest) {
 			...whereCondition,
 			name: {
 				contains: search,
-				mode: 'insensitive',
 			},
 		};
 	}
@@ -98,6 +97,18 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
 	try {
 		const { name, description, price, categoryId } = await req.json();
+
+		// Check existing category
+		const categoryExist = await prisma.category.findUnique({
+			where: {
+				id: parseInt(categoryId),
+			},
+		});
+
+		if (!categoryExist) {
+			throw new ApiError('Category not found', 404);
+		}
+
 		const newProduct = await prisma.product.create({
 			data: {
 				name,

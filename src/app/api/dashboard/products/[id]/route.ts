@@ -12,7 +12,10 @@ export async function GET(req: NextRequest, { params }: IdParamProps) {
 		if (!product) {
 			throw new ApiError('Not Found product', 404);
 		}
-		return NextResponse.json(product, { status: 200 });
+		const coverData = await prisma.productImage.findFirst({
+			where: { productId: product.id, imageType: 'cover' },
+		});
+		return NextResponse.json({ ...product, images: [{ id: coverData?.id ?? 0, filePath: coverData?.filePath ?? '/images/photo-mask.jpg' }] }, { status: 200 });
 	} catch (error) {
 		console.log(error);
 		if (error instanceof ApiError) {
