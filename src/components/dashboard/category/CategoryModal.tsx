@@ -108,10 +108,11 @@ export const CategoryModal = () => {
 								type="submit"
 								disabled={(selectedId && isLoading) || (!selectedId && !category.name)}
 								className={`flex items-center justify-center px-4 py-2 text-white rounded-md transition-all
-            ${(selectedId && isLoading) || (!selectedId && !category.name)
-										? 'bg-blue-600/80 cursor-not-allowed'
-										: 'bg-blue-600 hover:bg-blue-700 cursor-pointer'
-									}`}>
+            ${
+							(selectedId && isLoading) || (!selectedId && !category.name)
+								? 'bg-blue-600/80 cursor-not-allowed'
+								: 'bg-blue-600 hover:bg-blue-700 cursor-pointer'
+						}`}>
 								{selectedId ? 'Update' : 'Create'}
 							</button>
 						</div>

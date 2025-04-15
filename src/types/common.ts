@@ -43,8 +43,8 @@ export type PaginationComponentProps = {
 };
 
 export type ModalState = {
-  isOpen: boolean;
-  selectedId: string | null;
-  open: (id?: string) => void;
-  close: () => void;
+	isOpen: boolean;
+	selectedId: string | null;
+	open: (id?: string) => void;
+	close: () => void;
 };
