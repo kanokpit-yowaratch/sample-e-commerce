@@ -41,3 +41,10 @@ export type PaginationComponentProps = {
 	setCurrentPage: (page: number) => void;
 	setRowsPerPage: (size: number) => void;
 };
+
+export type ModalState = {
+  isOpen: boolean;
+  selectedId: string | null;
+  open: (id?: string) => void;
+  close: () => void;
+};

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { Prisma } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { ApiError } from '@/lib/errors';
 import { IdParamProps } from '@/types/common';
@@ -62,7 +62,7 @@ export async function PUT(req: NextRequest, { params }: IdParamProps) {
 		if (error instanceof ApiError) {
 			return NextResponse.json({ message: error.message }, { status: error.statusCode });
 		}
-		if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
+		if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
 			const target = error.meta?.target;
 			if (Array.isArray(target) && target.includes('name')) {
 				return NextResponse.json({ message: 'This name is already in use.' }, { status: 400 });
