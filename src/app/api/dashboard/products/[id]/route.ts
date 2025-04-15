@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { ApiError } from '@/lib/errors';
 import prisma from '@/lib/prisma';
 import { IdParamProps } from '@/types/common';
@@ -25,9 +26,9 @@ export async function GET(req: NextRequest, { params }: IdParamProps) {
 	} catch (error) {
 		console.log(error);
 		if (error instanceof ApiError) {
-			return NextResponse.json({ error: error.message }, { status: error.statusCode });
+			return NextResponse.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
@@ -51,9 +52,15 @@ export async function PUT(req: NextRequest, { params }: IdParamProps) {
 	} catch (error) {
 		console.log(error);
 		if (error instanceof ApiError) {
-			return NextResponse.json({ error: error.message }, { status: error.statusCode });
+			return NextResponse.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+		if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
+			const target = error.meta?.target;
+			if (Array.isArray(target) && target.includes('name')) {
+				return NextResponse.json({ message: 'This name is already in use.' }, { status: 400 });
+			}
+		}
+		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
@@ -73,9 +80,9 @@ export async function PATCH(req: Request, { params }: IdParamProps) {
 	} catch (error) {
 		console.log(error);
 		if (error instanceof ApiError) {
-			return NextResponse.json({ error: error.message }, { status: error.statusCode });
+			return NextResponse.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
@@ -98,8 +105,8 @@ export async function DELETE(req: NextRequest, { params }: IdParamProps) {
 	} catch (error) {
 		console.log(error);
 		if (error instanceof ApiError) {
-			return NextResponse.json({ error: error.message }, { status: error.statusCode });
+			return NextResponse.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }

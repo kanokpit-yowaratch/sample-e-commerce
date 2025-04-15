@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
 		return NextResponse.json(newStock, { status: 201 });
 	} catch (error) {
 		console.log(error);
-		return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
@@ -25,6 +25,6 @@ export async function GET() {
 		return NextResponse.json(categories);
 	} catch (error) {
 		console.log(error);
-		return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }

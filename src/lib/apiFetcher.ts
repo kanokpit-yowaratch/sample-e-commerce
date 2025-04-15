@@ -3,7 +3,7 @@ export async function retrieve<T>(url: string, options?: RequestInit): Promise<T
 
 	if (!response.ok) {
 		const errorBody = await response.json().catch(() => null);
-		throw new Error(errorBody?.message || `Error ${response.status}: ${response.statusText}`);
+		throw new Error(errorBody?.message ?? `${response.status}: ${response.statusText}`);
 	}
 
 	return response.json();

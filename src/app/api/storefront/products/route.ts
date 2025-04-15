@@ -10,8 +10,8 @@ export async function GET() {
 	} catch (error) {
 		console.log(error);
 		if (error instanceof ApiError) {
-			return NextResponse.json({ error: error.message }, { status: error.statusCode });
+			return NextResponse.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }

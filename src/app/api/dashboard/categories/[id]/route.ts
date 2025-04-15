@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import prisma from '@/lib/prisma';
 import { ApiError } from '@/lib/errors';
 import { IdParamProps } from '@/types/common';
@@ -16,9 +17,9 @@ export async function GET(req: NextRequest, { params }: IdParamProps) {
 	} catch (error) {
 		console.log(error);
 		if (error instanceof ApiError) {
-			return NextResponse.json({ error: error.message }, { status: error.statusCode });
+			return NextResponse.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
@@ -44,6 +45,11 @@ export async function PUT(req: NextRequest, { params }: IdParamProps) {
 			throw new ApiError('Category not found', 400);
 		}
 
+		// Skip update if the name hasn't changed
+		if (category.name === name) {
+			return NextResponse.json(category, { status: 200 });
+		}
+
 		category.name = name;
 		const updatedCategory = await prisma.category.update({
 			where: { id: categoryId },
@@ -54,9 +60,15 @@ export async function PUT(req: NextRequest, { params }: IdParamProps) {
 	} catch (error) {
 		console.log(error);
 		if (error instanceof ApiError) {
-			return NextResponse.json({ error: error.message }, { status: error.statusCode });
+			return NextResponse.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+		if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002' ) {
+			const target = error.meta?.target;
+			if (Array.isArray(target) && target.includes('name')) {
+				return NextResponse.json({ message: 'This name is already in use.' }, { status: 400 });
+			}
+		}
+		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
@@ -81,6 +93,6 @@ export async function DELETE(req: NextRequest, { params }: IdParamProps) {
 		return NextResponse.json({ message: 'Deleted successfully' }, { status: 200 });
 	} catch (error) {
 		console.log(error);
-		return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }

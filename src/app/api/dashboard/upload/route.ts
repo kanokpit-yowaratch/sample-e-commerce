@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
 	} catch (error) {
 		console.log(error);
 		if (error instanceof ApiError) {
-			return NextResponse.json({ error: error.message }, { status: error.statusCode });
+			return NextResponse.json({ message: error.message }, { status: error.statusCode });
 		}
 		return NextResponse.json({ Message: 'Failed to upload image', status: 500 });
 	}

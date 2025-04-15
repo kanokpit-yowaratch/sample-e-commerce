@@ -87,9 +87,9 @@ export async function GET(req: NextRequest) {
 	} catch (error) {
 		console.log(error);
 		if (error instanceof ApiError) {
-			return NextResponse.json({ error: error.message }, { status: error.statusCode });
+			return NextResponse.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
@@ -121,8 +121,8 @@ export async function POST(req: NextRequest) {
 	} catch (error) {
 		console.log(error);
 		if (error instanceof ApiError) {
-			return NextResponse.json({ error: error.message }, { status: error.statusCode });
+			return NextResponse.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ error: 'Failed to create product' }, { status: 500 });
+		return NextResponse.json({ message: 'Failed to create product' }, { status: 500 });
 	}
 }
