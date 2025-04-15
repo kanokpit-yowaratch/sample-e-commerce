@@ -42,6 +42,7 @@ export function useCreateItem<TCreate, T>(moduleName: string) {
 	return useMutation<T, Error, TCreate>({
 		mutationFn: (item) => create<T>(`${DASHBOARD_API}/${moduleName}`, item),
 		onSuccess: () => invalidateModule(queryClient, moduleName),
+		onError: (error: Error) => error,
 	});
 }
 
@@ -50,6 +51,7 @@ export function useUpdateItem<TUpdate, T>(moduleName: string, id: string) {
 	return useMutation<T, Error, TUpdate>({
 		mutationFn: (item) => update<T>(`${DASHBOARD_API}/${moduleName}/${id}`, item),
 		onSuccess: () => invalidateModule(queryClient, moduleName),
+		onError: (error: Error) => error,
 	});
 }
 
@@ -58,6 +60,7 @@ export function useDeleteItem<TId extends string | number>(moduleName: string) {
 	return useMutation<void, Error, TId>({
 		mutationFn: (id) => remove(`${DASHBOARD_API}/${moduleName}/${id}`),
 		onSuccess: () => invalidateModule(queryClient, moduleName),
+		onError: (error: Error) => error,
 	});
 }
 
@@ -66,5 +69,6 @@ export function useUploadCover<T>(moduleName: string) {
 	return useMutation<T, Error, FormData>({
 		mutationFn: (data) => upload<T>(`${DASHBOARD_API}/${moduleName}`, data),
 		onSuccess: () => invalidateModule(queryClient, moduleName),
+		onError: (error: Error) => error,
 	});
 }
