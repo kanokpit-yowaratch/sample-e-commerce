@@ -1,8 +1,12 @@
 type Id = 'id';
+type name = 'name';
 export type IdParams = Record<Id, string>;
-
+export type NameParams = Record<name, string>;
 export type IdParamProps = {
 	params: Promise<IdParams>;
+};
+export type NameParamProps = {
+	params: Promise<NameParams>;
 };
 
 export const SortOrder: {

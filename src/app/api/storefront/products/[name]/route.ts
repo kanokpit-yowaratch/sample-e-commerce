@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ApiError } from '@/lib/errors';
-import { IdParamProps } from '@/types/common';
-import { getProductById } from '@/lib/product';
+import { NameParamProps } from '@/types/common';
+import { getProductByName } from '@/lib/product';
 
-// Get Single Product
-export async function GET(req: NextRequest, { params }: IdParamProps) {
-	const { id } = await params;
+// Get Single Product by Name
+export async function GET(req: NextRequest, { params }: NameParamProps) {
+	const { name } = await params;
 	try {
-		const product = await getProductById(parseInt(id));
+		const product = await getProductByName(name);
 		if (!product) {
 			throw new ApiError('Not Found product', 404);
 		}

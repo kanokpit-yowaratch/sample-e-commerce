@@ -7,3 +7,28 @@ export async function getProductById(id: number) {
 	});
 	return product;
 }
+
+// Helper function to get product by Name
+export async function getProductByName(name: string) {
+	const product = await prisma.product.findUnique({
+		where: { name },
+	});
+	return product;
+}
+
+export const getProductsByCategory = async (categoryName: string) => {
+	const products = await prisma.product.findMany({
+		where: {
+			category: {
+				name: categoryName
+			}
+		},
+		include: {
+			category: true,
+			stocks: true,
+			images: true
+		}
+	});
+
+	return products;
+}
