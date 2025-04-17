@@ -3,6 +3,7 @@
 :root {
 	--background: #ffffff;
 	--foreground: #171717;
+	--glow-color: 10px -5px 10px rgba(255, 255, 0, 1);
 }
 
 @theme inline {
