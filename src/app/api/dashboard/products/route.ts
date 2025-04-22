@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
 		id: true,
 		name: true,
 		description: true,
-		price: false,
+		price: true,
 		categoryId: true,
 		createdAt: true,
 		updatedAt: true,

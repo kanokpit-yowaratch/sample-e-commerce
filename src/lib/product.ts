@@ -1,6 +1,6 @@
 import prisma from '@/lib/prisma';
 
-// Helper function to get product with relations
+// Helper function to get product by Id
 export async function getProductById(id: number) {
 	const product = await prisma.product.findUnique({
 		where: { id },
@@ -12,20 +12,21 @@ export async function getProductById(id: number) {
 export async function getProductByName(name: string) {
 	const product = await prisma.product.findUnique({
 		where: { name },
+		include: {
+			images: true,
+		},
 	});
 	return product;
 }
 
-export const getProductsByCategory = async (categoryName: string) => {
+export const getProductsByCategory = async (categoryId: number) => {
 	const products = await prisma.product.findMany({
 		where: {
 			category: {
-				name: categoryName,
+				id: categoryId,
 			},
 		},
 		include: {
-			category: true,
-			stocks: true,
 			images: true,
 		},
 	});

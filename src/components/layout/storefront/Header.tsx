@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import NextImage from 'next/image';
 import { Search, ShoppingCart, Menu, X, Bell } from 'lucide-react';
 
@@ -34,14 +35,16 @@ const Header = () => {
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div className="flex justify-between items-center h-16">
 					<div className="flex items-center">
-						<NextImage
-							src="/images/logo.png"
-							alt="Logo"
-							className="h-8 w-auto"
-							width={100}
-							height={50}
-							priority={true}
-						/>
+						<Link href="/" className="flex items-center space-x-2">
+							<NextImage
+								src="/images/logo.png"
+								alt="Logo"
+								className="h-8 w-auto"
+								width={100}
+								height={50}
+								priority={true}
+							/>
+						</Link>
 					</div>
 
 					<div className="hidden md:block flex-1 max-w-2xl mx-8">

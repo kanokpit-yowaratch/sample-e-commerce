@@ -12,7 +12,7 @@ export async function GET(req: NextRequest, { params }: NameParamProps) {
 		if (!category) {
 			throw new ApiError('Not Found category', 404);
 		}
-		const products = getProductsByCategory(name);
+		const products = await getProductsByCategory(category.id);
 		return NextResponse.json({ category, products });
 	} catch (error) {
 		console.log(error);
