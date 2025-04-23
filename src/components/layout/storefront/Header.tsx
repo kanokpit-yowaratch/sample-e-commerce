@@ -1,12 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import useCartStore from '@/stores/zustand/useCartStore';
 import Link from 'next/link';
 import NextImage from 'next/image';
 import { Search, ShoppingCart, Menu, X, Bell } from 'lucide-react';
 
 const Header = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const { items } = useCartStore();
 
 	return (
 		<header className="bg-fuchsia-950 text-white shadow-sm sticky top-0 z-50">
@@ -59,9 +61,14 @@ const Header = () => {
 					</div>
 
 					<div className="hidden md:flex items-center space-x-6">
-						<button className="text-white hover:text-primary transition-colors">
+						<Link href={'/cart'} className="relative transition-colors">
+							{items.length > 0 && (
+								<div className="absolute -top-2 -right-4 w-6 h-6 flex items-center justify-center bg-red-500 text-white text-xs rounded-full">
+									{items.length}
+								</div>
+							)}
 							<ShoppingCart className="h-6 w-6" />
-						</button>
+						</Link>
 					</div>
 
 					<button className="md:hidden text-foreground" onClick={() => setIsMenuOpen(!isMenuOpen)}>

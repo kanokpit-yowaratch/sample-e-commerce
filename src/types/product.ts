@@ -10,6 +10,16 @@ export type ProductDetail = Pick<Product, 'id' | 'name' | 'description' | 'price
 		},
 	];
 };
+
+export type ProductCart = {
+	id: string;
+	name: string;
+	price: number;
+	quantity: number;
+	image?: string;
+	[key: string]: unknown;
+};
+
 export type ProductResponse = Product & {
 	category: {
 		id: number;

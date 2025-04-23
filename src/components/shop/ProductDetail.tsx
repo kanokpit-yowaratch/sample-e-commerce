@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ProductDetail } from '@/types/product';
+import useCartStore from '@/stores/zustand/useCartStore';
+import { ProductCart, ProductDetail } from '@/types/product';
 import { NameParams } from '@/types/common';
 import NextImage from 'next/image';
 import { getImageSrc } from '@/lib/common';
@@ -10,6 +11,7 @@ import { useItem } from '@/hooks/useQueryStoreFront';
 
 export default function ProductDetailCp({ name }: Readonly<NameParams>) {
 	const { data: product } = useItem<ProductDetail>('products', name);
+	const { addToCart } = useCartStore();
 	const [disableBuyNow, setDisableBuyNow] = useState<boolean>(false);
 	const [quantity, setQuantity] = useState<number>(1);
 
@@ -20,6 +22,19 @@ export default function ProductDetailCp({ name }: Readonly<NameParams>) {
 	const decrementQuantity = () => {
 		if (quantity > 1) {
 			setQuantity((prev) => prev - 1);
+		}
+	};
+
+	const addProductToCart = (product?: ProductDetail) => {
+		if (product) {
+			const productCart: ProductCart = {
+				id: `${product.id}`,
+				name: product.name,
+				price: product.price,
+				quantity: quantity,
+				image: product.images[0]?.filePath,
+			};
+			addToCart(productCart);
 		}
 	};
 
@@ -174,7 +189,9 @@ export default function ProductDetailCp({ name }: Readonly<NameParams>) {
 					</div>
 
 					<div className="mt-8 flex gap-4">
-						<button className="flex-1 flex items-center justify-center gap-2 px-6 py-3 border border-fuchsia-500 text-fuchsia-500 rounded-sm hover:bg-fuchsia-50 transition-colors">
+						<button
+							className="flex-1 flex items-center justify-center gap-2 px-6 py-3 border border-fuchsia-500 text-fuchsia-500 rounded-sm hover:bg-fuchsia-50 transition-colors"
+							onClick={() => addProductToCart(product)}>
 							<ShoppingCartIcon className="w-5 h-5" />
 							Add To Cart
 						</button>
