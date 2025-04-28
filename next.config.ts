@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
 				pathname: '**',
 			},
 			{
+				protocol: 'https',
+				hostname: '**.co',
+				pathname: '**',
+			},
+			{
 				protocol: 'http',
 				hostname: 'localhost',
 				pathname: '**',

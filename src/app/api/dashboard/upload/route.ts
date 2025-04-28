@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile } from 'fs/promises';
-import path, { join } from 'path';
 import { ApiError } from '@/lib/errors';
 import prisma from '@/lib/prisma';
 import { ImageType, ProductImage } from '@prisma/client';
@@ -18,13 +16,27 @@ export async function POST(req: NextRequest) {
 			throw new ApiError('No file uploaded', 400);
 		}
 
-		const bytes = await file.arrayBuffer();
-		const buffer = Buffer.from(bytes);
+		const apiUploadUrl = process.env.UPLOAD_API;
+		const apiUploadKey = process.env.UPLOAD_KEY;
+		if (!apiUploadUrl) {
+			throw new ApiError('Failed to upload image', 500);
+		}
 
-		const fileExtension = path.extname(file.name);
-		const fileName = `product-${Date.now()}${fileExtension}`;
-		const filePath = join(process.cwd(), 'public/uploads', fileName);
-		await writeFile(filePath, buffer);
+		const formData = new FormData();
+		formData.append('image', file);
+		const apiUpload = await fetch(`${apiUploadUrl}?key=${apiUploadKey}`, {
+			method: 'POST',
+			body: formData,
+		});
+
+		if (!apiUpload.ok) {
+			throw new ApiError('Failed to upload image', 500);
+		}
+
+		const data = await apiUpload.json();
+		if (!data.success) {
+			throw new ApiError('Failed to upload image', 500);
+		}
 
 		const product = await getProductById(productId);
 		if (!product) {
@@ -45,7 +57,7 @@ export async function POST(req: NextRequest) {
 		const pImage: ProductImage = await prisma.productImage.create({
 			data: {
 				productId,
-				filePath: `/uploads/${fileName}`,
+				filePath: `${data.data.url}`,
 				imageType,
 			},
 		});
