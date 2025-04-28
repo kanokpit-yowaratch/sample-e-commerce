@@ -5,8 +5,8 @@
 	"scripts": {
 		"dev": "next dev",
 		"build": "prisma generate && next build",
-		"postinstall": "prisma generate && prisma migrate deploy",
-		"_prisma:migrate": "prisma migrate deploy",
+		"_postinstall": "prisma generate && prisma migrate deploy",
+		"prisma:migrate": "prisma migrate deploy",
 		"start": "next start",
 		"lint": "next lint",
 		"format": "npx prettier . --write"
