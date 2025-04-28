@@ -5,7 +5,7 @@
 	"scripts": {
 		"dev": "next dev",
 		"build": "prisma generate && next build",
-		"_postinstall": "prisma generate && prisma migrate deploy",
+		"postinstall": "prisma generate && prisma migrate deploy",
 		"start": "next start",
 		"lint": "next lint",
 		"format": "npx prettier . --write"
