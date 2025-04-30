@@ -1,14 +1,18 @@
 'use client';
 
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 import useCartStore from '@/stores/zustand/useCartStore';
+import { useLoginStore } from '@/stores/zustand/loginStore';
 import Link from 'next/link';
 import NextImage from 'next/image';
 import { Search, ShoppingCart, Menu, X, Bell } from 'lucide-react';
 
 const Header = () => {
+	const { data: session } = useSession();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const { items } = useCartStore();
+	const { openPopup } = useLoginStore();
 
 	return (
 		<header className="bg-fuchsia-950 text-white shadow-sm sticky top-0 z-50">
@@ -21,14 +25,22 @@ const Header = () => {
 							<Bell size={20} className="text-white" />
 						</div>
 						<div>
-							<NextImage
-								src="/images/user.png"
-								width={40}
-								height={40}
-								priority={true}
-								alt="User avatar"
-								className="w-8 h-8 rounded-full"
-							/>
+							{session ? (
+								<NextImage
+									src={session.user.image ?? `/images/user.png`}
+									width={40}
+									height={40}
+									priority={true}
+									alt="User avatar"
+									className="w-8 h-8 rounded-full"
+								/>
+							) : (
+								<button
+									onClick={openPopup}
+									className="bg-fuchsia-700 text-white px-4 py-2 rounded-lg hover:bg-fuchsia-800 transition-colors cursor-pointer">
+									Sign In
+								</button>
+							)}
 						</div>
 					</div>
 				</div>
