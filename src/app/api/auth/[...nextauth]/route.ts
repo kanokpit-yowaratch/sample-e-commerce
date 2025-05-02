@@ -1,5 +1,6 @@
 import NextAuth, { AuthOptions, User } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
+import GitHub from 'next-auth/providers/github';
 import { JWT } from 'next-auth/jwt';
 
 const authOptions: AuthOptions = {
@@ -16,6 +17,10 @@ const authOptions: AuthOptions = {
 					role: profile.role,
 				};
 			},
+		}),
+		GitHub({
+			clientId: process.env.AUTH_GITHUB_ID ?? '',
+			clientSecret: process.env.AUTH_GITHUB_SECRET ?? '',
 		}),
 	],
 	callbacks: {

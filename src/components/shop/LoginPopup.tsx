@@ -55,26 +55,28 @@ const LoginPopup = () => {
 					</button>
 
 					{/* <button
-            disabled={isLoading}
-            onClick={() => handleLogin("facebook")}
-            className="flex items-center justify-center w-full gap-3 py-3 px-4 bg-[#1877F2] hover:bg-[#166fe5] border border-[#1877F2] rounded-md text-white font-medium transition duration-150"
-          >
-            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M9.19795 21.5H13.198V13.4901H16.8021L17.198 9.50977H13.198V7.5C13.198 6.94772 13.6457 6.5 14.198 6.5H17.198V2.5H14.198C11.4365 2.5 9.19795 4.73858 9.19795 7.5V9.50977H7.19795L6.80206 13.4901H9.19795V21.5Z" />
-            </svg>
-            Continue with Facebook
-          </button>
-          
-          <button
-            disabled={isLoading}
-            onClick={() => handleLogin("github")}
-            className="flex items-center justify-center w-full gap-3 py-3 px-4 bg-black hover:bg-gray-900 border border-black rounded-md text-white font-medium transition duration-150"
-          >
-            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2C6.477 2 2 6.477 2 12C2 16.418 4.865 20.166 8.839 21.489C9.339 21.581 9.521 21.284 9.521 21.026C9.521 20.791 9.513 20.014 9.508 19.241C6.726 19.861 6.139 17.966 6.139 17.966C5.685 16.913 5.026 16.618 5.026 16.618C4.119 16.025 5.095 16.038 5.095 16.038C6.102 16.111 6.639 17.031 6.639 17.031C7.541 18.431 8.974 18.015 9.539 17.765C9.63 17.151 9.889 16.736 10.175 16.519C7.954 16.3 5.62 15.468 5.62 11.72C5.62 10.626 6.01 9.733 6.658 9.033C6.555 8.786 6.208 7.795 6.758 6.513C6.758 6.513 7.607 6.252 9.497 7.503C10.295 7.29 11.15 7.183 12 7.179C12.85 7.183 13.705 7.29 14.504 7.503C16.393 6.252 17.242 6.513 17.242 6.513C17.792 7.795 17.445 8.786 17.342 9.033C17.991 9.733 18.38 10.626 18.38 11.72C18.38 15.476 16.042 16.298 13.816 16.513C14.172 16.779 14.491 17.31 14.491 18.116C14.491 19.282 14.479 20.699 14.479 21.026C14.479 21.287 14.659 21.586 15.167 21.486C19.137 20.161 22 16.416 22 12C22 6.477 17.523 2 12 2Z" />
-            </svg>
-            Continue with GitHub
-          </button> */}
+						onClick={() => signIn("facebook")}
+						className="flex items-center justify-center w-full gap-3 py-3 px-4 bg-[#1877F2] hover:bg-[#166fe5] border border-[#1877F2] rounded-md text-white font-medium transition duration-150"
+					>
+						<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+							<path d="M9.19795 21.5H13.198V13.4901H16.8021L17.198 9.50977H13.198V7.5C13.198 6.94772 13.6457 6.5 14.198 6.5H17.198V2.5H14.198C11.4365 2.5 9.19795 4.73858 9.19795 7.5V9.50977H7.19795L6.80206 13.4901H9.19795V21.5Z" />
+						</svg>
+						Continue with Facebook
+					</button> */}
+
+					<button
+						onClick={() => signIn('github')}
+						className="flex items-center justify-center w-full gap-3 py-3 px-4 bg-black hover:bg-gray-900 border border-black rounded-md text-white font-medium transition duration-150">
+						<svg
+							viewBox="0 0 24 24"
+							width="24"
+							height="24"
+							fill="currentColor"
+							xmlns="http://www.w3.org/2000/svg">
+							<path d="M12 2C6.477 2 2 6.477 2 12C2 16.418 4.865 20.166 8.839 21.489C9.339 21.581 9.521 21.284 9.521 21.026C9.521 20.791 9.513 20.014 9.508 19.241C6.726 19.861 6.139 17.966 6.139 17.966C5.685 16.913 5.026 16.618 5.026 16.618C4.119 16.025 5.095 16.038 5.095 16.038C6.102 16.111 6.639 17.031 6.639 17.031C7.541 18.431 8.974 18.015 9.539 17.765C9.63 17.151 9.889 16.736 10.175 16.519C7.954 16.3 5.62 15.468 5.62 11.72C5.62 10.626 6.01 9.733 6.658 9.033C6.555 8.786 6.208 7.795 6.758 6.513C6.758 6.513 7.607 6.252 9.497 7.503C10.295 7.29 11.15 7.183 12 7.179C12.85 7.183 13.705 7.29 14.504 7.503C16.393 6.252 17.242 6.513 17.242 6.513C17.792 7.795 17.445 8.786 17.342 9.033C17.991 9.733 18.38 10.626 18.38 11.72C18.38 15.476 16.042 16.298 13.816 16.513C14.172 16.779 14.491 17.31 14.491 18.116C14.491 19.282 14.479 20.699 14.479 21.026C14.479 21.287 14.659 21.586 15.167 21.486C19.137 20.161 22 16.416 22 12C22 6.477 17.523 2 12 2Z" />
+						</svg>
+						Continue with GitHub
+					</button>
 				</div>
 			</div>
 		</div>
