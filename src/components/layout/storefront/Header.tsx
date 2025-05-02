@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { useModal } from '@/stores/zustand/modalStore';
 import useCartStore from '@/stores/zustand/useCartStore';
 import { useLoginStore } from '@/stores/zustand/loginStore';
 import Link from 'next/link';
@@ -12,6 +13,7 @@ const Header = () => {
 	const { data: session } = useSession();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const { items } = useCartStore();
+	const { open } = useModal();
 	const { openPopup } = useLoginStore();
 
 	return (
@@ -26,14 +28,16 @@ const Header = () => {
 						</div>
 						<div>
 							{session ? (
-								<NextImage
-									src={session.user.image ?? `/images/user.png`}
-									width={40}
-									height={40}
-									priority={true}
-									alt="User avatar"
-									className="w-8 h-8 rounded-full"
-								/>
+								<button className="flex items-center rounded-full cursor-pointer" onClick={() => open()}>
+									<NextImage
+										src={session.user.image ?? `/images/user.png`}
+										width={40}
+										height={40}
+										priority={true}
+										alt="User avatar"
+										className="w-8 h-8 rounded-full"
+									/>
+								</button>
 							) : (
 								<button
 									onClick={openPopup}
