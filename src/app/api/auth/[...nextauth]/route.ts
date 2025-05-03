@@ -1,5 +1,6 @@
 import NextAuth, { AuthOptions, User } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
+import Facebook from 'next-auth/providers/facebook';
 import GitHub from 'next-auth/providers/github';
 import { JWT } from 'next-auth/jwt';
 
@@ -17,6 +18,10 @@ const authOptions: AuthOptions = {
 					role: profile.role,
 				};
 			},
+		}),
+		Facebook({
+			clientId: process.env.FACEBOOK_CLIENT_ID ?? '',
+			clientSecret: process.env.FACEBOOK_CLIENT_SECRET ?? '',
 		}),
 		GitHub({
 			clientId: process.env.AUTH_GITHUB_ID ?? '',
