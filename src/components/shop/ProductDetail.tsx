@@ -3,14 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import useCartStore from '@/stores/zustand/useCartStore';
 import { ProductCart, ProductDetail } from '@/types/product';
-import { NameParams } from '@/types/common';
+import { ProductParams } from '@/types/common';
 import NextImage from 'next/image';
 import { getImageSrc } from '@/lib/common';
 import { MinusIcon, PlusIcon, ShoppingCartIcon, TruckIcon } from 'lucide-react';
-import { useItem } from '@/hooks/useQueryStoreFront';
 
-export default function ProductDetailCp({ name }: Readonly<NameParams>) {
-	const { data: product } = useItem<ProductDetail>('products', name);
+export default function ProductDetailCp({ product }: Readonly<ProductParams>) {
 	const { addToCart } = useCartStore();
 	const [disableBuyNow, setDisableBuyNow] = useState<boolean>(false);
 	const [quantity, setQuantity] = useState<number>(1);

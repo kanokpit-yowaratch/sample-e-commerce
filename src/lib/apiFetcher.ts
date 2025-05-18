@@ -13,6 +13,19 @@ export async function read<T>(url: string): Promise<T> {
 	return retrieve<T>(url);
 }
 
+export async function readWithRevalidate<T>(url: string): Promise<T> {
+	const response = await fetch(url, {
+		next: { revalidate: 60 }, // update data every 60 seconds
+	});
+
+	if (!response.ok) {
+		const errorBody = await response.json().catch(() => null);
+		throw new Error(errorBody?.message ?? `${response.status}: ${response.statusText}`);
+	}
+
+	return response.json();
+}
+
 export async function create<T>(url: string, data: unknown): Promise<T> {
 	const options: RequestInit = {
 		method: 'POST',

@@ -11,8 +11,11 @@ Small System E-Commerce by Next.js
 Create `.env` file and set variable
 
 ```bash
-# host
+# for client component
 NEXT_PUBLIC_API="http://localhost:3000"
+
+# for server component
+API_URL="http://localhost:3000"
 
 # database
 DATABASE_URL="[DATABASE_URL]"

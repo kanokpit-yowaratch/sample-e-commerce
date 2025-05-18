@@ -1,12 +1,19 @@
+import { ProductDetail } from "./product";
+
 type Id = 'id';
 type name = 'name';
+type Product = 'product';
 export type IdParams = Record<Id, string>;
 export type NameParams = Record<name, string>;
+export type ProductParams = Record<Product, ProductDetail>;
 export type IdParamProps = {
 	params: Promise<IdParams>;
 };
 export type NameParamProps = {
 	params: Promise<NameParams>;
+};
+export type ProductParamProps = {
+	params: Promise<ProductParams>;
 };
 
 export const SortOrder: {
