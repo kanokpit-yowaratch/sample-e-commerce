@@ -1,4 +1,4 @@
-import { ProductDetail } from "./product";
+import { ProductDetail } from './product';
 
 type Id = 'id';
 type name = 'name';
