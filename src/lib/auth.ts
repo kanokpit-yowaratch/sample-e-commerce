@@ -1,4 +1,4 @@
-import { AuthOptions, User } from 'next-auth';
+import { AuthOptions, getServerSession, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import Facebook from 'next-auth/providers/facebook';
@@ -88,7 +88,7 @@ export const authOptions: AuthOptions = {
   session: {
     strategy: 'jwt',
     maxAge: 60 * 60 * 1, // 1 hour (3600 seconds)
-    updateAge: 60 * 10, // refresh every 10 mins if active
+    // updateAge: 60 * 10, // refresh every 10 mins if active
   },
   callbacks: {
     jwt: async ({ token, user }: { token: JWT; user?: User }) => {
@@ -112,3 +112,16 @@ export const authOptions: AuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
+
+// If need to use in the future
+// export const { handler, auth, signIn, signOut } = NextAuth(authOptions);
+
+export async function getSession() {
+  const session = await getServerSession(authOptions);
+  return session;
+}
+
+export function isSessionExpired(session: { expires?: string | Date } | null | undefined): boolean {
+  if (!session?.expires) return true
+  return new Date() > new Date(session.expires)
+}

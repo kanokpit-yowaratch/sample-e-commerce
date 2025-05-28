@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useItems } from '@/hooks/useQueryDashboard';
+import { useItems } from '@/hooks/useQueryStoreFront';
 import { Category } from '@prisma/client';
 import Link from 'next/link';
 
