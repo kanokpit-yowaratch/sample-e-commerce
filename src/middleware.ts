@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 
 // Configuration constants
 const PROTECTED_ROUTES = {
-  pages: ['/profile/', '/dashboard/'],
+  pages: ['/order-history/', '/dashboard/'],
   apis: ['/api/dashboard/'],
   adminApis: ['/api/dashboard/report/']
 } as const;
@@ -60,6 +60,6 @@ export const config = {
   matcher: [
     '/api/dashboard/:path*',
     '/dashboard/:path*',
-    '/profile/:path*',
+    '/order-history/:path*',
   ]
 };

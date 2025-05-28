@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import NextImage from 'next/image';
 import { X } from 'lucide-react';
 import CountdownSessionTimer from '@/components/layout/storefront/CountdownSessionTimer';
+import Link from 'next/link';
 
 const ProfileDrawer = () => {
 	const { data: session } = useSession();
@@ -86,9 +87,9 @@ const ProfileDrawer = () => {
 											</>
 										)}
 										<CountdownSessionTimer />
-										{/* <Link href={'/order-history'} className="p-2 text-sky-700 cursor-pointer rounded-md">
+										<Link href={'/order-history'} className="p-2 text-sky-700 cursor-pointer rounded-md">
 											Order History
-										</Link> */}
+										</Link>
 										<button
 											className="px-2 py-1 rounded-md bg-fuchsia-700 text-white cursor-pointer hover:bg-fuchsia-800 transition-all"
 											onClick={onSignOut}>
