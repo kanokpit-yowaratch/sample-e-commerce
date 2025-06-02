@@ -5,10 +5,10 @@ import { Pencil, Trash, Search } from 'lucide-react';
 import { useDeleteItem, useItemsWithPagination } from '@/hooks/useQueryDashboard';
 import Link from 'next/link';
 import NextImage from 'next/image';
-import ProductPagination from './Pagination';
 import { ProductResponse } from '@/types/product';
 import { PaginationResponse } from '@/types/common';
 import { getImageSrc } from '@/lib/common';
+import Pagination from '@/components/ui/Pagination';
 
 const ProductDataTable = () => {
 	const [page, setPage] = useState(1);
@@ -136,7 +136,7 @@ const ProductDataTable = () => {
 					</tbody>
 				</table>
 			</div>
-			<ProductPagination
+			<Pagination
 				pageItems={products?.data.length ?? 0}
 				totalItems={products?.pagination.total ?? 0}
 				currentPage={page}
