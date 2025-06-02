@@ -1,7 +1,8 @@
 import React from 'react';
+import UserList from '@/components/dashboard/user/List';
 
-function page() {
-	return <div>Admin Users..</div>;
+function UserPage() {
+	return <UserList />;
 }
 
-export default page;
+export default UserPage;
