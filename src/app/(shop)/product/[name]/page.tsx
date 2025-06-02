@@ -47,7 +47,7 @@ const ProductDetailPage = async ({ params }: NameParamProps) => {
 	const product = await getProduct(name);
 
 	if (!product) {
-		return notFound;
+		return notFound();
 	}
 
 	return (
