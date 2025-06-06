@@ -57,12 +57,12 @@ export async function PUT(req: NextRequest, { params }: IdParamProps) {
 // Update User some fields
 export async function PATCH(req: Request, { params }: IdParamProps) {
   try {
-    const { name, phone } = await req.json();
+    const { name, phone, role } = await req.json();
     const { id } = await params;
     return Response.json(
       await prisma.user.update({
         where: { id },
-        data: { name, phone },
+        data: { name, phone, role },
       }),
       { status: 200 },
     );

@@ -201,7 +201,7 @@ export const UserModal = () => {
 										? 'bg-blue-600/80 cursor-not-allowed'
 										: 'bg-blue-600 hover:bg-blue-700 cursor-pointer'
 									}`}>
-								{selectedId ? 'Update' : 'Create'} {user.role}
+								{selectedId ? 'Update' : 'Create'}
 							</button>
 						</div>
 					</form>
