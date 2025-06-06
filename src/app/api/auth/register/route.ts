@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { hashPassword } from '@/lib/user';
+import { checkUserExists, hashPassword } from '@/lib/user';
 import { ApiError } from '@/lib/errors';
 import { registerSchema } from '@/lib/schemas/register-schema';
 import { Role } from '@prisma/client';
@@ -14,11 +14,7 @@ export async function POST(req: NextRequest) {
 			throw new ApiError('Invalid input', 400);
 		}
 
-		const existingUser = await prisma.user.findFirst({
-			where: {
-				email,
-			},
-		});
+		const existingUser = await checkUserExists(email);
 		if (existingUser) {
 			return NextResponse.json(
 				{

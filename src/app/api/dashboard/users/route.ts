@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { ApiError } from '@/lib/errors';
 import { SortOrder } from '@/types/common';
+import { checkUserExists, hashPassword } from '@/lib/user';
 
 // Get users with pagination
 export async function GET(req: NextRequest) {
@@ -73,20 +74,30 @@ export async function GET(req: NextRequest) {
 // Create User
 export async function POST(req: NextRequest) {
 	try {
-		const { name, email, password, role } = await req.json();
-		console.log(name, email, password, role);
+		const { name, email, password, role, phone } = await req.json();
 
-		// const newUser = await prisma.user.create({
-		// 	data: {
-		// 		name,
-		// 		email,
-		// 		role,
-		// 		price: Number(price),
-		// 		categoryId: parseInt(categoryId),
-		// 	},
-		// });
-		// return Response.json(newUser, { status: 201 });
-		return NextResponse.json({ message: 'User created successfully' }, { status: 201 });
+		const existingUser = await checkUserExists(email);
+		if (existingUser) {
+			return NextResponse.json(
+				{
+					success: false,
+					message: 'This email is already in use.',
+				},
+				{ status: 409 },
+			);
+		}
+
+		const hashedPassword = await hashPassword(password);
+		const newUser = await prisma.user.create({
+			data: {
+				name,
+				email,
+				password: hashedPassword,
+				role,
+				phone,
+			},
+		});
+		return NextResponse.json({ ...newUser, message: 'User created successfully' }, { status: 201 });
 	} catch (error) {
 		console.log(error);
 		if (error instanceof ApiError) {

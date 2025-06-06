@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { create, read, update, remove, upload } from '@/lib/apiFetcher';
+import { create, read, update, remove, upload, patch } from '@/lib/apiFetcher';
 import { PaginationParams, PaginationResponse } from '@/types/common';
 
 const DASHBOARD_API = '/api/dashboard';
@@ -50,6 +50,15 @@ export function useUpdateItem<TUpdate, T>(moduleName: string, id: string) {
 	const queryClient = useQueryClient();
 	return useMutation<T, Error, TUpdate>({
 		mutationFn: (item) => update<T>(`${DASHBOARD_API}/${moduleName}/${id}`, item),
+		onSuccess: () => invalidateModule(queryClient, moduleName),
+		onError: (error: Error) => error,
+	});
+}
+
+export function usePatchItem<TUpdate, T>(moduleName: string, id: string) {
+	const queryClient = useQueryClient();
+	return useMutation<T, Error, TUpdate>({
+		mutationFn: (item) => patch<T>(`${DASHBOARD_API}/${moduleName}/${id}`, item),
 		onSuccess: () => invalidateModule(queryClient, moduleName),
 		onError: (error: Error) => error,
 	});
