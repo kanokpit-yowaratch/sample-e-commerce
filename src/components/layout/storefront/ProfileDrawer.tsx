@@ -6,7 +6,7 @@ import { useModal } from '@/stores/zustand/modalStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import NextImage from 'next/image';
 import { X } from 'lucide-react';
-import CountdownSessionTimer from '@/components/layout/storefront/CountdownSessionTimer';
+// import CountdownSessionTimer from '@/components/layout/storefront/CountdownSessionTimer';
 import Link from 'next/link';
 
 const ProfileDrawer = () => {
@@ -86,7 +86,7 @@ const ProfileDrawer = () => {
 												<span className="text-blue-900 font-semibold">{session.user.name}</span>
 											</>
 										)}
-										<CountdownSessionTimer />
+										{/* <CountdownSessionTimer /> */}
 										<Link href={'/order-history'} className="p-2 text-sky-700 cursor-pointer rounded-md">
 											Order History
 										</Link>
