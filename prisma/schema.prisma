@@ -29,9 +29,14 @@ enum Role {
 }
 
 model Permission {
-  id          Int    @id @default(autoincrement())
-  name        String @unique
-  description String
+  id        Int      @id @default(autoincrement())
+  roleId    Int
+  resource  String   @db.VarChar(50)
+  action    String   @db.VarChar(50)
+  createdAt DateTime @default(now())
+
+  @@unique([roleId, resource, action], name: "unique_permission")
+  @@map("permissions")
 }
 
 model Product {
