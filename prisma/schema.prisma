@@ -72,7 +72,7 @@ model ProductImage {
   imageType ImageType @default(thumbnail)
   filePath  String    @unique
 
-  product   Product @relation("ProductImage", fields: [productId], references: [id])
+  product   Product @relation("ProductImage", fields: [productId], references: [id], onDelete: Cascade)
   productId Int
 
   updatedAt DateTime @default(now())
