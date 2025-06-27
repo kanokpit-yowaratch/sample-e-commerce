@@ -1,3 +1,4 @@
+import { LucideIcon } from 'lucide-react';
 import { ProductDetail } from './product';
 
 type Id = 'id';
@@ -59,3 +60,9 @@ export type ModalState = {
 	open: (id?: string) => void;
 	close: () => void;
 };
+
+export type MenuType = {
+	id: string;
+	label: string;
+	icon: LucideIcon;
+}

@@ -1,14 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Pencil, Trash, Search } from 'lucide-react';
-import { useDeleteItem, useItemsWithPagination } from '@/hooks/useQueryDashboard';
+import { Edit, Trash, Search } from 'lucide-react';
+import { useItemsWithPagination } from '@/hooks/useQueryDashboard';
 import Link from 'next/link';
 import NextImage from 'next/image';
 import { ProductResponse } from '@/types/product';
 import { PaginationResponse } from '@/types/common';
 import { getImageSrc } from '@/lib/common';
 import Pagination from '@/components/ui/Pagination';
+import DeleteButton from '@/components/ui/DeleteButton';
+import EditLink from '@/components/ui/EditLink';
 
 const ProductDataTable = () => {
 	const [page, setPage] = useState(1);
@@ -24,14 +26,6 @@ const ProductDataTable = () => {
 		perPage,
 		search,
 	});
-	const { mutate: mutateDelete } = useDeleteItem<number>('products');
-
-	const handleDelete = (id: number) => {
-		const result = confirm('Are you sure you want to delete this information?');
-		if (result) {
-			mutateDelete(id);
-		}
-	};
 
 	const resetData = () => {
 		setPage(1);
@@ -121,14 +115,22 @@ const ProductDataTable = () => {
 								<td className="p-4">{item.createdAt?.toString().slice(0, 10) ?? ''}</td>
 								<td className="p-4">
 									<div className="w-full flex items-center justify-center gap-2">
-										<Link href={`/dashboard/products/${item.id}`}>
-											<Pencil />
-										</Link>
-										<button
-											className="py-1 px-2 bg-red-600 text-white cursor-pointer rounded-md"
-											onClick={() => handleDelete(item.id)}>
-											<Trash />
-										</button>
+										<EditLink
+											resource={'data'}
+											action={'update'}
+											icon={Edit}
+											module="products"
+											id={item.id}
+											className="flex items-center gap-1 bg-amber-600 text-white px-2 py-1 rounded-md cursor-pointer hover:bg-amber-700 transition-all"
+										/>
+										<DeleteButton
+											resource={'data'}
+											action={'delete'}
+											icon={Trash}
+											module="products"
+											id={item.id}
+											className="flex items-center gap-1 bg-red-600 text-white px-2 py-1 rounded-md cursor-pointer hover:bg-red-700 transition-all"
+										/>
 									</div>
 								</td>
 							</tr>

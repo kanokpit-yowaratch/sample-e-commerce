@@ -1,27 +1,57 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Home, Users, LogOut, Rocket, CircleDollarSign, Sun, Moon, Menu, Boxes } from 'lucide-react';
+import { signOut } from 'next-auth/react';
+import { LogOut, Sun, Moon, Menu } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useDrawer } from '@/contexts/DrawerContext';
+import { allowedMenus, PermissionSet } from '@/types/permission';
+import { useItems } from '@/hooks/useQueryProtected';
+import { MenuType } from '@/types/common';
+import { mapIcon } from '@/lib/common';
 
 function Sidebar() {
-	const router = useRouter();
+	const { data: userPermissions, refetch } = useItems<PermissionSet[]>('permissions/user', { enabled: false });
 	const pathname = usePathname();
 	const { theme, toggleTheme } = useTheme();
 	const { isDrawerOpen, toggleDrawer } = useDrawer();
 	const [activeBg, setActiveBg] = useState(theme === 'dark' ? 'bg-fuchsia-900' : 'bg-sky-600');
 	const [activeSection, setActiveSection] = useState(pathname.split('/').filter(Boolean).pop() ?? '');
+	const [menus, setMenus] = useState<MenuType[]>([]);
+	const router = useRouter();
 
-	const goPage = (section: string) => {
-		setActiveSection(section);
-		router.push(`/dashboard/${section}`);
+	const goPage = (menuId: string) => {
+		setActiveSection(menuId);
+		if (menuId === 'dashboard') {
+			router.replace(`/dashboard`);
+		} else {
+			router.replace(`/dashboard/${menuId}`);
+		}
 	};
+
+	const onSignOut = () => {
+		localStorage.removeItem('session_expiry');
+		localStorage.removeItem('user_permissions');
+		signOut();
+	}
 
 	useEffect(() => {
 		setActiveBg(theme === 'dark' ? 'bg-fuchsia-900' : 'bg-sky-600');
 	}, [theme]);
+
+	useEffect(() => {
+		refetch();
+		if (userPermissions) {
+			localStorage.setItem('user_permissions', JSON.stringify(userPermissions));
+			const menuList = userPermissions.filter((data) => {
+				return data.action === 'access_menu' && allowedMenus.includes(data.resource)
+			}).map((data) => {
+				return { icon: mapIcon(data.resource), label: data.resource, id: data.resource }
+			});
+			setMenus(menuList);
+		}
+	}, [userPermissions]);
 
 	return (
 		<div
@@ -35,13 +65,7 @@ function Sidebar() {
 				</div>
 
 				<nav className="space-y-2">
-					{[
-						{ icon: Home, label: 'Dashboard', id: '' },
-						{ icon: Users, label: 'Users', id: 'users' },
-						{ icon: Boxes, label: 'Categories', id: 'categories' },
-						{ icon: Rocket, label: 'Products', id: 'products' },
-						{ icon: CircleDollarSign, label: 'Orders', id: 'orders' },
-					].map(({ icon: Icon, label, id }) => (
+					{menus?.map(({ icon: Icon, label, id }) => (
 						<button
 							key={label}
 							className={`flex items-center space-x-3 w-full p-3 rounded-lg transition-colors cursor-pointer text-white ${activeSection === id ? activeBg : ''}`}
@@ -68,7 +92,9 @@ function Sidebar() {
 							</>
 						)}
 					</button>
-					<button className="flex items-center space-x-3 w-full p-3 rounded-lg transition-colors cursor-pointer text-white">
+					<button
+						className="flex items-center space-x-3 w-full p-3 rounded-lg transition-colors cursor-pointer text-white"
+						onClick={onSignOut}>
 						<LogOut size={20} />
 						<span>Logout</span>
 					</button>
