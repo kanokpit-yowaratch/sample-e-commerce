@@ -27,4 +27,4 @@ export type PermissionElementProps = {
 }
 
 export const initialPermission = { roleId: roleIdMap['guest'], resource: '', action: '' };
-export const allowedMenus = ['dashboard', 'users', 'permissions', 'categories', 'products', 'orders'];
+export const allowedMenus = ['dashboard', 'users', 'permissions', 'categories', 'products', 'orders', 'reports'];
