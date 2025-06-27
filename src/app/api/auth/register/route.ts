@@ -3,7 +3,6 @@ import prisma from '@/lib/prisma';
 import { checkUserExists, hashPassword } from '@/lib/user';
 import { ApiError } from '@/lib/errors';
 import { registerSchema } from '@/lib/schemas/register-schema';
-import { Role } from '@prisma/client';
 
 export async function POST(req: NextRequest) {
 	try {
@@ -33,7 +32,7 @@ export async function POST(req: NextRequest) {
 				name,
 				createdAt: new Date(),
 				updatedAt: new Date(),
-				role: Role.store,
+				role,
 			},
 		});
 
