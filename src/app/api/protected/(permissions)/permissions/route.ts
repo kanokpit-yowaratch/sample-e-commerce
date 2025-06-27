@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
 	if (search?.trim()) {
 		whereCondition = {
 			...whereCondition,
-			name: {
+			resource: {
 				contains: search,
 			},
 		};

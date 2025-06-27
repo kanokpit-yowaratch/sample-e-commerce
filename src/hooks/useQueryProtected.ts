@@ -31,10 +31,12 @@ export function useItemsWithPagination<T, TPagination extends PaginationResponse
   options: PaginationParams,
 ) {
   const { page, perPage, search } = options;
+  const queryString = search ? `?page=${page}&perPage=${perPage}&search=${search}`
+    : `?page=${page}&perPage=${perPage}`;
   return useQuery({
     queryKey: [module, options],
     queryFn: () =>
-      read<TPagination>(`${DASHBOARD_API}/${module}?page=${page}&perPage=${perPage}&search=${search}`),
+      read<TPagination>(`${DASHBOARD_API}/${module}${queryString}`),
     staleTime: defaultStaleTime,
   });
 }
