@@ -4,7 +4,8 @@ import type { NextRequest } from 'next/server';
 
 // Configuration constants
 const PROTECTED_ROUTES = {
-  pages: ['/order-history/', '/dashboard/'],
+  pages: ['/order-history', '/dashboard'],
+  backoffice: ['/dashboard'],
   apis: ['/api/dashboard/', '/api/protected/'],
   adminApis: ['/api/dashboard/report/']
 } as const;
@@ -28,8 +29,13 @@ const isAdminApiRoute = (pathname: string): boolean =>
 const isProtectedPageRoute = (pathname: string): boolean =>
   PROTECTED_ROUTES.pages.some(route => pathname.startsWith(route));
 
+const isBackofficeRoute = (pathname: string): boolean =>
+  PROTECTED_ROUTES.backoffice.some(route => pathname.startsWith(route));
+
 const isAdminUser = (role: string | undefined): boolean =>
   role === 'admin';
+const isStoreUser = (role: string | undefined): boolean =>
+  role === 'store';
 
 export default withAuth(function middleware(req) {
   const { pathname } = req.nextUrl;
@@ -48,9 +54,12 @@ export default withAuth(function middleware(req) {
     return NextResponse.next();
   }
 
-  // Handle authenticated users - role-based access control
   if (isAdminApiRoute(pathname) && !isAdminUser(token.role)) {
     return RESPONSES.forbidden();
+  }
+
+  if (isBackofficeRoute(pathname) && (!isAdminUser(token.role) && !isStoreUser(token.role))) {
+    return RESPONSES.redirectToHome(req);
   }
 
   return NextResponse.next();

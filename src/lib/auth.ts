@@ -1,11 +1,12 @@
 import { AuthOptions, getServerSession, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
-import Facebook from 'next-auth/providers/facebook';
-import GitHub from 'next-auth/providers/github';
+import FacebookProvider from 'next-auth/providers/facebook';
+import GitHubProvider from 'next-auth/providers/github';
 import { JWT } from 'next-auth/jwt';
 import prisma from '@/lib/prisma';
 import { comparePassword } from '@/lib/user';
+import { Role } from '@prisma/client';
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -69,28 +70,76 @@ export const authOptions: AuthOptions = {
       profile(profile) {
         return {
           id: profile.sub,
-          name: `${profile.given_name} ${profile.family_name}`,
+          name: `${profile.name}`,
           email: profile.email,
           image: profile.picture,
           role: profile.role,
         };
       },
     }),
-    Facebook({
+    FacebookProvider({
       clientId: process.env.FACEBOOK_CLIENT_ID ?? '',
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET ?? '',
+      profile(profile) {
+        return {
+          id: profile.id,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture?.data?.url,
+          role: profile.role,
+        };
+      },
     }),
-    GitHub({
+    GitHubProvider({
       clientId: process.env.AUTH_GITHUB_ID ?? '',
       clientSecret: process.env.AUTH_GITHUB_SECRET ?? '',
+      profile(profile) {
+        return {
+          id: profile.id.toString(),
+          name: profile.name ?? profile.login,
+          email: profile.email,
+          image: profile.avatar_url,
+          role: profile.role,
+        };
+      },
     }),
   ],
   session: {
     strategy: 'jwt',
     maxAge: 60 * 60 * 1, // 1 hour (3600 seconds)
-    // updateAge: 60 * 10, // refresh every 10 mins if active
   },
   callbacks: {
+    async signIn({ account, profile }) {
+      try {
+        // register to customer user for oauth only
+        if (account?.type !== 'oauth') {
+          return true;
+        }
+        if (profile?.email) {
+          const existingUser = await prisma.user.findUnique({
+            where: {
+              email: profile?.email,
+            },
+          });
+
+          if (!existingUser) {
+            await prisma.user.create({
+              data: {
+                name: `${profile?.name}`,
+                email: profile?.email ?? '',
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                role: Role.customer,
+              },
+            });
+          }
+        }
+        return true;
+      } catch (error) {
+        console.error('Error in signIn callback:', error);
+        return false;
+      }
+    },
     jwt: async ({ token, user }: { token: JWT; user?: User }) => {
       if (user) {
         token.id = user.id;
