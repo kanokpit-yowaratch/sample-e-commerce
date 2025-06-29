@@ -19,6 +19,8 @@ model User {
   role      Role
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  carts Cart[] @relation("UserCart")
 }
 
 enum Role {
@@ -48,8 +50,9 @@ model Product {
   category   Category @relation("ProductCategory", fields: [categoryId], references: [id])
   categoryId Int
 
-  stocks Stock[]        @relation("ProductStock")
-  images ProductImage[] @relation("ProductImage")
+  stocks    Stock[]        @relation("ProductStock")
+  images    ProductImage[] @relation("ProductImage")
+  cartItems CartItem[]     @relation("ProductToCartItems")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -81,6 +84,35 @@ model ProductImage {
   productId Int
 
   updatedAt DateTime @default(now())
+}
+
+model Cart {
+  id         Int        @id @default(autoincrement())
+  totalPrice Float
+  status     CartStatus @default(ACTIVE)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  user   User   @relation("UserCart", fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  cartItems CartItem[] @relation("CartToItems")
+}
+
+model CartItem {
+  id        Int     @id @default(autoincrement())
+  quantity  Int
+  price     Float
+  product   Product @relation("ProductToCartItems", fields: [productId], references: [id], onDelete: Cascade)
+  productId Int
+
+  cart   Cart @relation("CartToItems", fields: [cartId], references: [id])
+  cartId Int
+}
+
+enum CartStatus {
+  ACTIVE
+  CHECKED_OUT
 }
 
 enum ImageType {

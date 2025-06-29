@@ -1,16 +1,13 @@
 import { ProductCart } from './product';
 
-export type CartItem = ProductCart & {
-	quantity: number;
-};
-
 export interface CartState {
-	items: CartItem[];
+	items: ProductCart[];
 	total: number;
-	addToCart: (product: ProductCart) => void;
-	removeFromCart: (productId: string | number) => void;
-	updateQuantity: (productId: string, newQuantity: number) => void;
-	clearCart: () => void;
+	addToCart: (product: ProductCart) => Promise<void>;
+	removeFromCart: (productId: string | number) => Promise<void>;
+	updateQuantity: (productId: string, newQuantity: number) => Promise<void>;
+	clearCart: () => Promise<void>;
+	syncCartToDB: (userEmail: string) => Promise<void>;
 }
 
 export type Cart = {
@@ -40,7 +37,7 @@ export type CartResponseData = {
 };
 
 export interface CartItemProps {
-	item: CartItem;
+	item: ProductCart;
 	onQuantityChange: (id: string, quantity: number) => void;
 	onRemove: (id: string) => void;
 }

@@ -11,15 +11,15 @@ import { MinusIcon, PlusIcon, ShoppingCartIcon, TruckIcon } from 'lucide-react';
 export default function ProductDetailCp({ product }: Readonly<ProductParams>) {
 	const { addToCart } = useCartStore();
 	const [disableBuyNow, setDisableBuyNow] = useState<boolean>(false);
-	const [quantity, setQuantity] = useState<number>(1);
+	const [totalQuantity, setTotalQuantity] = useState<number>(1);
 
 	const incrementQuantity = () => {
-		setQuantity((prev) => prev + 1);
+		setTotalQuantity((prev) => prev + 1);
 	};
 
 	const decrementQuantity = () => {
-		if (quantity > 1) {
-			setQuantity((prev) => prev - 1);
+		if (totalQuantity > 1) {
+			setTotalQuantity((prev) => prev - 1);
 		}
 	};
 
@@ -29,10 +29,11 @@ export default function ProductDetailCp({ product }: Readonly<ProductParams>) {
 				id: `${product.id}`,
 				name: product.name,
 				price: product.price,
-				quantity: quantity,
+				quantity: totalQuantity,
 				image: product.images[0]?.filePath,
 			};
 			addToCart(productCart);
+			setTotalQuantity(1);
 		}
 	};
 
@@ -170,8 +171,8 @@ export default function ProductDetailCp({ product }: Readonly<ProductParams>) {
 								</button>
 								<input
 									type="text"
-									value={quantity}
-									onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+									value={totalQuantity}
+									onChange={(e) => setTotalQuantity(parseInt(e.target.value) || 1)}
 									className="w-12 h-8 text-center border-t border-b border-gray-300"
 								/>
 								<button
