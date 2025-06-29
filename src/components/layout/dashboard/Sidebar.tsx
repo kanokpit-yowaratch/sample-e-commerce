@@ -50,6 +50,9 @@ function Sidebar() {
 				return { icon: mapIcon(data.resource), label: data.resource, id: data.resource }
 			});
 			setMenus(menuList);
+		} else {
+			localStorage.removeItem('user_permissions');
+			setMenus([]);
 		}
 	}, [userPermissions]);
 
