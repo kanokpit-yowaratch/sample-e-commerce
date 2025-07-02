@@ -9,11 +9,11 @@ import useCartStore from '@/stores/zustand/useCartStore';
 export default function ShoppingCart() {
 	const { items, removeFromCart, updateQuantity, clearCart } = useCartStore();
 
-	const handleQuantityChange = (id: string, quantity: number) => {
+	const handleQuantityChange = (id: number, quantity: number) => {
 		updateQuantity(id, quantity);
 	};
 
-	const handleRemoveItem = (id: string) => {
+	const handleRemoveItem = (id: number) => {
 		removeFromCart(id);
 	};
 

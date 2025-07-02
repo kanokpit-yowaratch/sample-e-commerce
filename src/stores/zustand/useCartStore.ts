@@ -65,7 +65,7 @@ const useCartStore = create<CartState>()(
 				}
 			},
 
-			updateQuantity: async (productId: string, newQuantity: number) => {
+			updateQuantity: async (productId: number, newQuantity: number) => {
 				const currentItems = get().items;
 				const itemToUpdate = currentItems.find((item) => item.id === productId);
 
@@ -106,13 +106,20 @@ const useCartStore = create<CartState>()(
 				}));
 
 				try {
-					await fetch('/api/protected/cart', {
+					const syncResponse = await fetch('/api/protected/cart', {
 						method: 'POST',
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify({ mode: cartMode, userEmail, cart: { items: cartNoImage } }),
 					});
+					// has data in DB, no data in local
+					if (!cartMode && syncResponse.ok && cart.items.length === 0) {
+						const data = await syncResponse.json();
+						data.cartItems.forEach((item: ProductCart) => {
+							cart.addToCart(item);
+						});
+					}
 				} catch (err) {
-					console.error('Failed to sync cart to DB', err);
+					console.log('Failed to sync cart to DB', err);
 				}
 			},
 		}),

@@ -11,7 +11,7 @@ export type ProductDetail = Pick<Product, 'id' | 'name' | 'description' | 'price
 };
 
 export type ProductCart = {
-	id: string;
+	id: number;
 	name: string;
 	price: number;
 	quantity: number;

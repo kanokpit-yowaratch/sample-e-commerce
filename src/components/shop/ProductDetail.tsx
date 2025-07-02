@@ -26,7 +26,7 @@ export default function ProductDetailCp({ product }: Readonly<ProductParams>) {
 	const addProductToCart = (product?: ProductDetail) => {
 		if (product) {
 			const productCart: ProductCart = {
-				id: `${product.id}`,
+				id: product.id,
 				name: product.name,
 				price: product.price,
 				quantity: totalQuantity,

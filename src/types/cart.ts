@@ -4,8 +4,8 @@ export interface CartState {
 	items: ProductCart[];
 	total: number;
 	addToCart: (product: ProductCart) => Promise<void>;
-	removeFromCart: (productId: string | number) => Promise<void>;
-	updateQuantity: (productId: string, newQuantity: number) => Promise<void>;
+	removeFromCart: (productId: number) => Promise<void>;
+	updateQuantity: (productId: number, newQuantity: number) => Promise<void>;
 	clearCart: () => Promise<void>;
 	syncCartToDB: (userEmail: string, mode?: string) => Promise<void>;
 }
@@ -38,8 +38,8 @@ export type CartResponseData = {
 
 export interface CartItemProps {
 	item: ProductCart;
-	onQuantityChange: (id: string, quantity: number) => void;
-	onRemove: (id: string) => void;
+	onQuantityChange: (id: number, quantity: number) => void;
+	onRemove: (id: number) => void;
 }
 
 export interface CartSummaryProps {
