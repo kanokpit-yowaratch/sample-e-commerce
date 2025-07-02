@@ -59,14 +59,14 @@ export const PermissionModal = () => {
 
 	const onSubmit = () => {
 		if (selectedId) {
-			console.log(selectedId);
 			mutateUpdate(permission, {
 				onSuccess: () => {
 					reset();
 					close();
 				},
 				onError: (error) => {
-					console.log(error);
+					const message = error instanceof Error ? error.message : 'Internal server error';
+					console.log(message);
 				},
 			});
 		} else {
@@ -76,7 +76,8 @@ export const PermissionModal = () => {
 					close();
 				},
 				onError: (error) => {
-					console.log(error);
+					const message = error instanceof Error ? error.message : 'Internal server error';
+					console.log(message);
 				},
 			});
 		}

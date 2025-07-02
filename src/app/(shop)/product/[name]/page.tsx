@@ -10,7 +10,8 @@ async function getProduct(name: string): Promise<ProductDetail | null> {
 	try {
 		return await readWithRevalidate<ProductDetail>(`${process.env.API_URL}/api/storefront/products/${name}`);
 	} catch (error) {
-		console.log(error);
+		const message = error instanceof Error ? error.message : 'Internal server error';
+		console.log(message);
 		return null;
 	}
 }

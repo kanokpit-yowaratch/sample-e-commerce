@@ -119,7 +119,8 @@ const useCartStore = create<CartState>()(
 						});
 					}
 				} catch (err) {
-					console.log('Failed to sync cart to DB', err);
+					const message = err instanceof Error ? err.message : 'Failed to sync cart to DB';
+					console.log(message);
 				}
 			},
 		}),

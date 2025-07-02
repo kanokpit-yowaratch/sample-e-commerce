@@ -38,9 +38,8 @@ export default function ProductDetailCp({ product }: Readonly<ProductParams>) {
 	};
 
 	useEffect(() => {
-		console.log(product);
 		setDisableBuyNow(true);
-	}, [product]);
+	}, []);
 
 	return (
 		<div className="max-w-7xl mx-auto px-4 py-8">

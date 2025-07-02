@@ -80,10 +80,7 @@ function Edit({ id }: Readonly<IdParams>) {
 
 	const onSubmit = () => {
 		try {
-			console.log(product);
-			const validatedProduct = productSchema.parse(product);
-			console.log(validatedProduct);
-			console.log('Validated Product:', validatedProduct);
+			productSchema.parse(product);
 			mutateUpdate(product);
 			if (imageFile && id) {
 				const formData = new FormData();
@@ -109,14 +106,7 @@ function Edit({ id }: Readonly<IdParams>) {
 	};
 
 	useEffect(() => {
-		if (product) {
-			console.log(product);
-		}
-	}, [product]);
-
-	useEffect(() => {
 		if (data) {
-			console.log(data);
 			setValue('name', data.name);
 			setValue('description', data.description);
 			setValue('price', Number(data.price));

@@ -49,7 +49,6 @@ export const UserModal = () => {
 
 	const onSubmit = () => {
 		if (selectedId) {
-			console.log(selectedId);
 			mutateUpdate(user, {
 				onSuccess: () => {
 					reset();
