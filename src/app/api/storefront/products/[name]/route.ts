@@ -13,7 +13,6 @@ export async function GET(req: NextRequest, { params }: NameParamProps) {
 		}
 		return NextResponse.json(product, { status: 200 });
 	} catch (error) {
-		console.log(error);
 		if (error instanceof ApiError) {
 			return NextResponse.json({ message: error.message }, { status: error.statusCode });
 		}

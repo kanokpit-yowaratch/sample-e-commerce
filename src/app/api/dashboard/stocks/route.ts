@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { ApiError } from '@/lib/errors';
 
 // Create Stock
 export async function POST(req: NextRequest) {
@@ -13,7 +14,9 @@ export async function POST(req: NextRequest) {
 		});
 		return NextResponse.json(newStock, { status: 201 });
 	} catch (error) {
-		console.log(error);
+		if (error instanceof ApiError) {
+			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+		}
 		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }
@@ -24,7 +27,9 @@ export async function GET() {
 		const categories = await prisma.stock.findMany();
 		return NextResponse.json(categories);
 	} catch (error) {
-		console.log(error);
+		if (error instanceof ApiError) {
+			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+		}
 		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }

@@ -15,7 +15,6 @@ export async function GET(req: NextRequest, { params }: NameParamProps) {
 		const products = await getProductsByCategory(category.id);
 		return NextResponse.json({ category, products });
 	} catch (error) {
-		console.log(error);
 		if (error instanceof ApiError) {
 			return NextResponse.json({ message: error.message }, { status: error.statusCode });
 		}

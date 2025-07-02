@@ -1,3 +1,4 @@
+import { ApiError } from '@/lib/errors';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
@@ -10,7 +11,9 @@ export async function GET() {
 			status: 200,
 		});
 	} catch (error) {
-		console.log(error);
+		if (error instanceof ApiError) {
+			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+		}
 		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }

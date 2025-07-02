@@ -15,7 +15,6 @@ export async function GET(req: NextRequest, { params }: IdParamProps) {
     }
     return NextResponse.json(user, { status: 200 });
   } catch (error) {
-    console.log(error);
     if (error instanceof ApiError) {
       return NextResponse.json({ message: error.message }, { status: error.statusCode });
     }
@@ -40,7 +39,6 @@ export async function PUT(req: NextRequest, { params }: IdParamProps) {
     });
     return NextResponse.json(userUpdate, { status: 200 });
   } catch (error) {
-    console.log(error);
     if (error instanceof ApiError) {
       return NextResponse.json({ message: error.message }, { status: error.statusCode });
     }
@@ -67,7 +65,6 @@ export async function PATCH(req: Request, { params }: IdParamProps) {
       { status: 200 },
     );
   } catch (error) {
-    console.log(error);
     if (error instanceof ApiError) {
       return NextResponse.json({ message: error.message }, { status: error.statusCode });
     }
@@ -91,7 +88,6 @@ export async function DELETE(req: NextRequest, { params }: IdParamProps) {
 
     return NextResponse.json({ message: 'Deleted successfully' }, { status: 200 });
   } catch (error) {
-    console.log(error);
     if (error instanceof ApiError) {
       return NextResponse.json({ message: error.message }, { status: error.statusCode });
     }

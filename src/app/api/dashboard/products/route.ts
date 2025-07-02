@@ -85,7 +85,6 @@ export async function GET(req: NextRequest) {
 
 		return Response.json(responseProducts, { status: 200 });
 	} catch (error) {
-		console.log(error);
 		if (error instanceof ApiError) {
 			return NextResponse.json({ message: error.message }, { status: error.statusCode });
 		}
@@ -119,7 +118,6 @@ export async function POST(req: NextRequest) {
 		});
 		return Response.json(newProduct);
 	} catch (error) {
-		console.log(error);
 		if (error instanceof ApiError) {
 			return NextResponse.json({ message: error.message }, { status: error.statusCode });
 		}

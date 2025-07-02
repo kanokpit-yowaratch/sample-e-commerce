@@ -15,7 +15,9 @@ export async function GET(req: NextRequest, { params }: IdParamProps) {
 		}
 		return NextResponse.json(stock, { status: 200 });
 	} catch (error) {
-		console.log(error);
+		if (error instanceof ApiError) {
+			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+		}
 		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }
@@ -52,7 +54,6 @@ export async function PUT(req: NextRequest, { params }: IdParamProps) {
 
 		return NextResponse.json(updatedStock, { status: 200 });
 	} catch (error) {
-		console.log(error);
 		if (error instanceof ApiError) {
 			return NextResponse.json({ message: error.message }, { status: error.statusCode });
 		}
@@ -80,7 +81,6 @@ export async function DELETE(req: NextRequest, { params }: IdParamProps) {
 
 		return NextResponse.json({ message: 'Deleted successfully' }, { status: 200 });
 	} catch (error) {
-		console.log(error);
 		if (error instanceof ApiError) {
 			return NextResponse.json({ message: error.message }, { status: error.statusCode });
 		}

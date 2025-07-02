@@ -63,7 +63,6 @@ export async function GET(req: NextRequest) {
 
 		return Response.json(responseUsers, { status: 200 });
 	} catch (error) {
-		console.log(error);
 		if (error instanceof ApiError) {
 			return NextResponse.json({ message: error.message }, { status: error.statusCode });
 		}
@@ -99,7 +98,6 @@ export async function POST(req: NextRequest) {
 		});
 		return NextResponse.json({ ...newUser, message: 'User created successfully' }, { status: 201 });
 	} catch (error) {
-		console.log(error);
 		if (error instanceof ApiError) {
 			return NextResponse.json({ message: error.message }, { status: error.statusCode });
 		}

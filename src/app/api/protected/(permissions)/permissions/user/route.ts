@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
 import { getRoleId } from '@/lib/permission';
 import { RoleIdMapType } from '@/types/permission';
+import { ApiError } from '@/lib/errors';
 
 export async function GET() {
   try {
@@ -25,7 +26,9 @@ export async function GET() {
     }
 
   } catch (error) {
-    console.log(error);
+    if (error instanceof ApiError) {
+      return NextResponse.json({ message: error.message }, { status: error.statusCode });
+    }
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 }
