@@ -14,3 +14,5 @@ export const cartSchema = z.object({
     )
   }),
 });
+
+export type CartSchema = z.infer<typeof cartSchema>;

@@ -7,7 +7,7 @@ export interface CartState {
 	removeFromCart: (productId: string | number) => Promise<void>;
 	updateQuantity: (productId: string, newQuantity: number) => Promise<void>;
 	clearCart: () => Promise<void>;
-	syncCartToDB: (userEmail: string) => Promise<void>;
+	syncCartToDB: (userEmail: string, mode?: string) => Promise<void>;
 }
 
 export type Cart = {

@@ -44,7 +44,7 @@ const useCartStore = create<CartState>()(
 
 				const session = await getSession();
 				if (session?.user?.id) {
-					await get().syncCartToDB(session.user.email ?? '');
+					await get().syncCartToDB(session.user.email ?? '', 'add');
 				}
 			},
 
@@ -60,7 +60,7 @@ const useCartStore = create<CartState>()(
 
 					const session = await getSession();
 					if (session?.user?.id) {
-						await get().syncCartToDB(session.user.email ?? '');
+						await get().syncCartToDB(session.user.email ?? '', 'remove-item');
 					}
 				}
 			},
@@ -86,7 +86,7 @@ const useCartStore = create<CartState>()(
 
 					const session = await getSession();
 					if (session?.user?.id) {
-						await get().syncCartToDB(session.user.email ?? '');
+						await get().syncCartToDB(session.user.email ?? '', 'update-quantity');
 					}
 				}
 			},
@@ -95,11 +95,11 @@ const useCartStore = create<CartState>()(
 				set({ items: [], total: 0 });
 				const session = await getSession();
 				if (session?.user?.id) {
-					await get().syncCartToDB(session.user.email ?? '');
+					await get().syncCartToDB(session.user.email ?? '', 'clear');
 				}
 			},
 
-			syncCartToDB: async (userEmail: string) => {
+			syncCartToDB: async (userEmail: string, cartMode?: string) => {
 				const cart = get();
 				const cartNoImage = cart.items.map(({ id, name, price, quantity }) => ({
 					id, name, price, quantity
@@ -109,7 +109,7 @@ const useCartStore = create<CartState>()(
 					await fetch('/api/protected/cart', {
 						method: 'POST',
 						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({ userEmail, cart: { items: cartNoImage } }),
+						body: JSON.stringify({ mode: cartMode, userEmail, cart: { items: cartNoImage } }),
 					});
 				} catch (err) {
 					console.error('Failed to sync cart to DB', err);
