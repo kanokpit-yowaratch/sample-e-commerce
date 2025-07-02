@@ -1,25 +1,11 @@
 import prisma from '@/lib/prisma';
+import { cartSchema } from '@/lib/schemas/cart-schema';
 import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
-
-const CartSchema = z.object({
-  userEmail: z.string(),
-  cart: z.object({
-    items: z.array(
-      z.object({
-        id: z.string(),
-        name: z.string(),
-        price: z.number(),
-        quantity: z.number(),
-      }),
-    )
-  }),
-});
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const data = CartSchema.parse(body); const user = await prisma.user.findFirst({
+    const data = cartSchema.parse(body); const user = await prisma.user.findFirst({
       where: {
         email: data.userEmail,
       },

@@ -1,15 +1,10 @@
-import { Role, User } from '@prisma/client';
-import { Pagination } from './common';
+import { Role, User } from '@prisma/client'
 
 export type UserCreate = Pick<User, 'name' | 'email' | 'role' | 'phone' | 'password'>;
 export type UserUpdate = Pick<User, 'name' | 'role' | 'phone'>;
 
 export type UserResponse = User & {
   address: [];
-};
-
-export type UserPagination = Pagination & {
-  data: UserResponse[];
 };
 
 export const roles = Object.values(Role) as [string, ...string[]];
