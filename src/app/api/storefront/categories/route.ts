@@ -8,7 +8,6 @@ export async function GET() {
 		const categories = await prisma.category.findMany();
 		return NextResponse.json(categories, { status: 200 });
 	} catch (error) {
-		console.log(error);
 		if (error instanceof ApiError) {
 			return NextResponse.json({ message: error.message }, { status: error.statusCode });
 		}
