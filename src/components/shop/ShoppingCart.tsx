@@ -31,7 +31,7 @@ export default function ShoppingCart() {
 			<div className="w-full flex items-center mb-2">
 				<button
 					onClick={clearCart}
-					className="flex items-center gap-2 bg-red-900 text-white px-4 py-2 rounded-md cursor-pointer hover:bg-red-800 transition-colors">
+					className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-md cursor-pointer hover:bg-red-700 transition-colors">
 					<Trash2Icon size={18} />
 					<span>Clear Cart</span>
 				</button>
@@ -53,14 +53,6 @@ export default function ShoppingCart() {
 				</div>
 
 				<div className="lg:col-span-1">
-					<div className="mb-4">
-						<h3 className="text-base font-medium mb-2">ตำแหน่ง</h3>
-						<div className="flex items-start gap-2">
-							<MapPinIcon size={20} className="text-gray-500 mt-1 flex-shrink-0" />
-							<span className="text-sm">10240, บางกะปิ/ Bang Kapi,กรุงเทพมหานคร/ Bangkok</span>
-						</div>
-					</div>
-
 					<CartSummary
 						subtotal={subtotal}
 						shipping={shipping}
