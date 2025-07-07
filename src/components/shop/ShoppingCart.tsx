@@ -2,7 +2,7 @@
 
 import React from 'react';
 import CartSummary from './CartSummary';
-import { Trash2Icon, MapPinIcon } from 'lucide-react';
+import { Trash2Icon } from 'lucide-react';
 import CartItemComponent from './Cart';
 import useCartStore from '@/stores/zustand/useCartStore';
 
