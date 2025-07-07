@@ -1,17 +1,24 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useSession } from 'next-auth/react';
 import useCartStore from '@/stores/zustand/useCartStore';
-import { ProductCart, ProductDetail } from '@/types/product';
+import { ProductCart } from '@/types/product';
 import { ProductParams } from '@/types/common';
 import NextImage from 'next/image';
 import { getImageSrc } from '@/lib/common';
 import { MinusIcon, PlusIcon, ShoppingCartIcon, TruckIcon } from 'lucide-react';
+import { useLoginStore } from '@/stores/zustand/loginStore';
+import { useRouter } from 'next/navigation';
+import useBuyNowStore from '@/stores/zustand/useBuyNowStore';
 
 export default function ProductDetailCp({ product }: Readonly<ProductParams>) {
+	const { data: session } = useSession();
 	const { addToCart } = useCartStore();
-	const [disableBuyNow, setDisableBuyNow] = useState<boolean>(false);
+	const { addToBuyNow } = useBuyNowStore();
+	const { openPopup } = useLoginStore();
 	const [totalQuantity, setTotalQuantity] = useState<number>(1);
+	const router = useRouter();
 
 	const incrementQuantity = () => {
 		setTotalQuantity((prev) => prev + 1);
@@ -23,7 +30,7 @@ export default function ProductDetailCp({ product }: Readonly<ProductParams>) {
 		}
 	};
 
-	const addProductToCart = (product?: ProductDetail) => {
+	const addProductToCart = () => {
 		if (product) {
 			const productCart: ProductCart = {
 				id: product.id,
@@ -37,9 +44,21 @@ export default function ProductDetailCp({ product }: Readonly<ProductParams>) {
 		}
 	};
 
-	useEffect(() => {
-		setDisableBuyNow(true);
-	}, []);
+	const onCheckOut = () => {
+		if (session && product) {
+			const productCart: ProductCart = {
+				id: product.id,
+				name: product.name,
+				price: product.price,
+				quantity: totalQuantity,
+				image: product.images[0]?.filePath,
+			};
+			addToBuyNow(productCart);
+			router.push('/checkout?from=buynow');
+		} else if (!session && product) {
+			openPopup();
+		}
+	};
 
 	return (
 		<div className="max-w-7xl mx-auto px-4 py-8">
@@ -189,18 +208,14 @@ export default function ProductDetailCp({ product }: Readonly<ProductParams>) {
 					<div className="mt-8 flex gap-4">
 						<button
 							className="flex-1 flex items-center justify-center gap-2 px-6 py-3 border border-fuchsia-500 text-fuchsia-500 rounded-sm hover:bg-fuchsia-50 transition-colors"
-							onClick={() => addProductToCart(product)}>
+							onClick={() => addProductToCart()}>
 							<ShoppingCartIcon className="w-5 h-5" />
 							Add To Cart
 						</button>
 						<button
-							className={`flex-1 px-6 py-3 text-white rounded-sm 
-                ${
-									disableBuyNow
-										? 'bg-fuchsia-400/80 cursor-not-allowed'
-										: 'bg-fuchsia-500 hover:bg-fuchsia-600 cursor-pointer'
-								} transition-colors`}
-							disabled={true}>
+							className={`flex-1 px-6 py-3 text-white rounded-sm bg-fuchsia-500 hover:bg-fuchsia-600 cursor-pointer transition-colors`}
+							onClick={() => onCheckOut()}
+						>
 							Buy Now
 						</button>
 					</div>

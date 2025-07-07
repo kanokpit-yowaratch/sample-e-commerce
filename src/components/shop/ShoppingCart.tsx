@@ -1,13 +1,19 @@
 'use client';
 
 import React from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useLoginStore } from '@/stores/zustand/loginStore';
 import CartSummary from './CartSummary';
 import { Trash2Icon } from 'lucide-react';
 import CartItemComponent from './Cart';
 import useCartStore from '@/stores/zustand/useCartStore';
 
 export default function ShoppingCart() {
+	const { data: session } = useSession();
 	const { items, removeFromCart, updateQuantity, clearCart } = useCartStore();
+	const { openPopup } = useLoginStore();
+	const router = useRouter();
 
 	const handleQuantityChange = (id: number, quantity: number) => {
 		updateQuantity(id, quantity);
@@ -18,8 +24,11 @@ export default function ShoppingCart() {
 	};
 
 	const handleCheckout = () => {
-		console.log('Proceeding to checkout with items:', items);
-		// Add your checkout logic here
+		if (session) {
+			router.push('/checkout?from=cart');
+		} else {
+			openPopup();
+		}
 	};
 
 	const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);

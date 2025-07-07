@@ -16,6 +16,9 @@ export type NameParamProps = {
 export type ProductParamProps = {
 	params: Promise<ProductParams>;
 };
+export type QueryParamsProps = {
+	searchParams: Promise<{ from?: string }>
+}
 
 export const SortOrder: {
 	asc: 'asc';
