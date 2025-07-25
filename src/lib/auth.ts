@@ -73,7 +73,7 @@ export const authOptions: AuthOptions = {
           name: `${profile.name}`,
           email: profile.email,
           image: profile.picture,
-          role: profile.role,
+          role: Role.customer,
         };
       },
     }),
@@ -86,7 +86,7 @@ export const authOptions: AuthOptions = {
           name: profile.name,
           email: profile.email,
           image: profile.picture?.data?.url,
-          role: profile.role,
+          role: Role.customer,
         };
       },
     }),
@@ -99,7 +99,7 @@ export const authOptions: AuthOptions = {
           name: profile.name ?? profile.login,
           email: profile.email,
           image: profile.avatar_url,
-          role: profile.role,
+          role: Role.customer,
         };
       },
     }),
