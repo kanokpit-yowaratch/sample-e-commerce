@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { sampleAddress, ShippingAddress, ShippingAddressState } from '@/types/checkout';
+import { sampleAddress, ShippingAddress, ShippingAddressState } from '@/types/address';
 
 const useShippingAddressStore = create<ShippingAddressState>()((set) => ({
   address: sampleAddress,

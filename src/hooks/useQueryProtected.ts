@@ -66,7 +66,7 @@ export function useUpdateItem<TUpdate, T>(moduleName: string, id: string) {
   });
 }
 
-export function usePatchItem<TUpdate, T>(moduleName: string, id: string) {
+export function usePatchItem<TUpdate, T>(moduleName: string, id: string | number) {
   const queryClient = useQueryClient();
   return useMutation<T, Error, TUpdate>({
     mutationFn: (item) => patch<T>(`${DASHBOARD_API}/${moduleName}/${id}`, item),

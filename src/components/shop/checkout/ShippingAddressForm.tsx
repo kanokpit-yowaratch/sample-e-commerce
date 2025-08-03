@@ -2,11 +2,14 @@
 
 import React, { useState } from 'react';
 import { Truck, MapPin, User, Phone, Save, X, Edit2 } from 'lucide-react';
-import { ShippingAddress } from '@/types/checkout';
+import { ShippingAddress } from '@/types/address';
 import useShippingAddressStore from '@/stores/zustand/useShippingAddressStore';
+import { useCreateItem, usePatchItem } from '@/hooks/useQueryProtected';
 
 function ShippingAddressForm() {
   const { address, setShippingAddress } = useShippingAddressStore();
+  const { mutate: mutateCreate } = useCreateItem('user/default-address');
+  const { mutate: mutatePatch } = usePatchItem('user/default-address', address.id);
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState<ShippingAddress>(address);
 
@@ -18,6 +21,25 @@ function ShippingAddressForm() {
   const handleSave = () => {
     setShippingAddress(editForm);
     setIsEditing(false);
+    if (address.id === 0) {
+      mutateCreate(address, {
+        onSuccess: (response) => {
+          console.log(response);
+        },
+        onError: (error) => {
+          console.log(error);
+        },
+      });
+    } else {
+      mutatePatch(address, {
+        onSuccess: (response) => {
+          console.log(response);
+        },
+        onError: (error) => {
+          console.log(error);
+        },
+      });
+    }
   };
 
   const handleCancel = () => {
@@ -74,7 +96,7 @@ function ShippingAddressForm() {
             <div className="flex items-start gap-2">
               <MapPin size={18} className="mt-1 text-gray-400" />
               <p className="text-gray-700">
-                {address.address1}, {address.address2}, {address.city}, {address.province}, {address.zipCode}
+                {address.address1}, {address.address2}, {address.city}, {address.province}, {address.zipcode}
               </p>
             </div>
             <button
@@ -92,7 +114,7 @@ function ShippingAddressForm() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   <User size={16} className="inline mr-1" />
-                  ชื่อ-สกุล / บริษัท / โรงงาน
+                  ชื่อ-สกุล / บริษัท
                 </label>
                 <input
                   type="text"
@@ -135,7 +157,7 @@ function ShippingAddressForm() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 <MapPin size={16} className="inline mr-1" />
-                เขต / แขวง
+                แขวง
               </label>
               <input
                 type="text"
@@ -177,8 +199,8 @@ function ShippingAddressForm() {
                 </label>
                 <input
                   type="text"
-                  value={editForm.zipCode}
-                  onChange={(e) => handleInputChange('zipCode', e.target.value)}
+                  value={editForm.zipcode}
+                  onChange={(e) => handleInputChange('zipcode', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="รหัสไปรษณีย์"
                 />

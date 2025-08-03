@@ -29,8 +29,6 @@ export default function CartSummary({
 				<span className="text-orange-500">฿{total.toFixed(2)}</span>
 			</div>
 
-			<div className="text-xs text-gray-500 mb-4 text-right">ราคายังไม่รวมภาษี (ถ้ามี)</div>
-
 			<button onClick={onCheckout} className="w-full bg-orange-500 text-white rounded-md py-3 font-medium cursor-pointer">
 				ดำเนินการชำระเงิน({itemCount})
 			</button>

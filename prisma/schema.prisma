@@ -20,7 +20,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  carts Cart[] @relation("UserCart")
+  carts     Cart[]    @relation("UserCart")
+  addresses Address[] @relation("UserAddress")
 }
 
 enum Role {
@@ -118,4 +119,23 @@ enum CartStatus {
 enum ImageType {
   cover
   thumbnail
+}
+
+model Address {
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String
+  address1  String
+  address2  String
+  city      String
+  province  String
+  zipcode   String
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation("UserAddress", fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@map("addresses")
 }
