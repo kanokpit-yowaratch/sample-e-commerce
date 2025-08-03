@@ -8,7 +8,7 @@ import { useCreateItem, usePatchItem } from '@/hooks/useQueryProtected';
 
 function ShippingAddressForm() {
   const { address, setShippingAddress } = useShippingAddressStore();
-  const { mutate: mutateCreate } = useCreateItem('user/default-address');
+  const { mutate: mutateCreate } = useCreateItem<ShippingAddress, ShippingAddress>('user/default-address');
   const { mutate: mutatePatch } = usePatchItem('user/default-address', address.id);
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState<ShippingAddress>(address);
@@ -20,11 +20,12 @@ function ShippingAddressForm() {
 
   const handleSave = () => {
     setShippingAddress(editForm);
+    console.log(editForm);
     setIsEditing(false);
-    if (address.id === 0) {
+    if (editForm.id === 0) {
       mutateCreate(editForm, {
         onSuccess: (response) => {
-          console.log(response);
+          setEditForm((prev) => ({ ...prev, id: response.id }));
         },
         onError: (error) => {
           console.log(error);
