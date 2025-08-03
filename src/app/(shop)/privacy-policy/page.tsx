@@ -18,7 +18,6 @@ export default function PrivacyPolicy() {
 				<h3 className="text-xl font-semibold text-slate-700 mb-3">Information you provide to us:</h3>
 				<ul className="list-disc pl-6 mb-6 space-y-2 text-slate-700">
 					<li>Account information when you sign in with Facebook (name, email address, profile picture)</li>
-					<li>Payment information processed through Stripe (credit card details, billing address)</li>
 					<li>Transaction history and purchase information</li>
 					<li>Any other information you choose to provide</li>
 				</ul>
@@ -84,7 +83,7 @@ export default function PrivacyPolicy() {
 				<h2 className="text-2xl font-bold text-slate-800 mb-4">Stripe Payment Processing</h2>
 				<p className="text-slate-700 mb-8">
 					We use Stripe for payment processing. When you make a payment, your payment card information is
-					securely transmitted directly to Stripe. We do not store your full credit card details on our
+					securely transmitted directly to Stripe. We do not store your full payment details on our
 					servers. Stripe may use your information as described in their privacy policy:
 					<Link
 						href="https://sample-e-commerce.vercel.app/privacy-policy"

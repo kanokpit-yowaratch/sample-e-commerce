@@ -6,7 +6,7 @@ import useCartStore from '@/stores/zustand/useCartStore';
 import { useLoginStore } from '@/stores/zustand/loginStore';
 import Link from 'next/link';
 import NextImage from 'next/image';
-import { Search, ShoppingCart, Menu, X, Bell, LogOut } from 'lucide-react';
+import { ShoppingCart, Menu, X, LogOut } from 'lucide-react';
 
 const Header = () => {
 	const { data: session } = useSession();
@@ -23,9 +23,18 @@ const Header = () => {
 	return (
 		<header className="bg-fuchsia-950 text-white shadow-sm sticky top-0 z-50">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div className="flex justify-between items-center h-16">
+				<div className="flex justify-between items-center h-20">
 					<div className="hidden md:flex items-center space-x-1 flex-1 max-w-2xl">
-						ติดตามเราบน
+						<Link href="/" className="flex items-center space-x-2">
+							<NextImage
+								src="/images/logo.png"
+								alt="Logo"
+								className="h-8 w-auto"
+								width={100}
+								height={50}
+								priority={true}
+							/>
+						</Link>
 						<Link href={'https://www.facebook.com/konbakhiancode'}>
 							<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" height="36" viewBox="0 0 48 48">
 								<path fill="#039be5" d="M24 5A19 19 0 1 0 24 43A19 19 0 1 0 24 5Z"></path><path fill="#fff" d="M26.572,29.036h4.917l0.772-4.995h-5.69v-2.73c0-2.075,0.678-3.915,2.619-3.915h3.119v-4.359c-0.548-0.074-1.707-0.236-3.897-0.236c-4.573,0-7.254,2.415-7.254,7.917v3.323h-4.701v4.995h4.701v13.729C22.089,42.905,23.032,43,24,43c0.875,0,1.729-0.08,2.572-0.194V29.036z"></path>
@@ -40,7 +49,14 @@ const Header = () => {
 
 					<div className="hidden md:flex items-center space-x-6">
 						<div>
-							<Bell size={20} className="text-white" />
+							<Link href={'/cart'} className="relative transition-colors">
+								{items.length > 0 && (
+									<div className="absolute -top-2 -right-4 w-6 h-6 flex items-center justify-center bg-red-500 text-white text-xs rounded-full">
+										{items.length}
+									</div>
+								)}
+								<ShoppingCart className="h-6 w-6" />
+							</Link>
 						</div>
 						<div>
 							{session ? (
@@ -113,53 +129,15 @@ const Header = () => {
 							)}
 						</div>
 					</div>
-				</div>
-			</div>
-
-			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div className="flex justify-between items-center h-16">
-					<div className="flex items-center">
-						<Link href="/" className="flex items-center space-x-2">
-							<NextImage
-								src="/images/logo.png"
-								alt="Logo"
-								className="h-8 w-auto"
-								width={100}
-								height={50}
-								priority={true}
-							/>
-						</Link>
+					<div className="w-full flex justify-end md:hidden">
+						<button
+							type="button"
+							className="text-white"
+							onClick={() => setShowMobileMenu(!showMobileMenu)}
+						>
+							{showMobileMenu ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+						</button>
 					</div>
-
-					<div className="hidden md:block flex-1 max-w-2xl mx-8">
-						<div className="relative">
-							<input
-								type="text"
-								placeholder="Search products..."
-								className="w-full px-4 py-2 rounded-lg border border-input focus:outline-none focus:ring-2 focus:ring-primary"
-							/>
-							<Search className="absolute right-3 top-2.5 text-gray-400" />
-						</div>
-					</div>
-
-					<div className="hidden md:flex items-center space-x-6">
-						<Link href={'/cart'} className="relative transition-colors">
-							{items.length > 0 && (
-								<div className="absolute -top-2 -right-4 w-6 h-6 flex items-center justify-center bg-red-500 text-white text-xs rounded-full">
-									{items.length}
-								</div>
-							)}
-							<ShoppingCart className="h-6 w-6" />
-						</Link>
-					</div>
-
-					<button
-						type="button"
-						className="md:hidden text-foreground"
-						onClick={() => setShowMobileMenu(!showMobileMenu)}
-					>
-						{showMobileMenu ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-					</button>
 				</div>
 			</div>
 
