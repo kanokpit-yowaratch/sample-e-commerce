@@ -22,7 +22,7 @@ function ShippingAddressForm() {
     setShippingAddress(editForm);
     setIsEditing(false);
     if (address.id === 0) {
-      mutateCreate(address, {
+      mutateCreate(editForm, {
         onSuccess: (response) => {
           console.log(response);
         },
@@ -31,7 +31,7 @@ function ShippingAddressForm() {
         },
       });
     } else {
-      mutatePatch(address, {
+      mutatePatch(editForm, {
         onSuccess: (response) => {
           console.log(response);
         },
