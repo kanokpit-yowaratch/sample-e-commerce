@@ -1,31 +1,60 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Truck, MapPin, User, Phone, Save, X, Edit2 } from 'lucide-react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { ShippingAddress } from '@/types/address';
 import useShippingAddressStore from '@/stores/zustand/useShippingAddressStore';
 import { useCreateItem, usePatchItem } from '@/hooks/useQueryProtected';
+import { Truck, MapPin, User, Phone, Save, X, Edit2 } from 'lucide-react';
+import { shippingAddressSchema, ShippingAddressSchema } from '@/lib/schemas/shipping-address-schema';
+import { useForm } from 'react-hook-form';
 
 function ShippingAddressForm() {
   const { address, setShippingAddress } = useShippingAddressStore();
   const { mutate: mutateCreate } = useCreateItem<ShippingAddress, ShippingAddress>('user/default-address');
-  const { mutate: mutatePatch } = usePatchItem('user/default-address', address.id);
+  const { mutate: mutatePatch } = usePatchItem<ShippingAddress, ShippingAddress>('user/default-address', address?.id);
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState<ShippingAddress>(address);
+  const [addressLoading, setAddressLoading] = useState<boolean>(false);
+  const {
+    register,
+    setValue,
+    clearErrors,
+  } = useForm<ShippingAddressSchema>({
+    resolver: zodResolver(shippingAddressSchema),
+    reValidateMode: 'onChange',
+    defaultValues: address,
+  });
 
   const handleEdit = () => {
     setEditForm(address);
     setIsEditing(true);
   };
 
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setEditForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    clearErrors(name as keyof ShippingAddressSchema);
+    Object.entries({ [name]: value }).forEach(([fieldName, fieldValue]) => {
+      setValue(fieldName as keyof ShippingAddressSchema, fieldValue, {
+        shouldValidate: true,
+        shouldDirty: true,
+        shouldTouch: true
+      });
+    });
+  };
+
   const handleSave = () => {
-    setShippingAddress(editForm);
-    console.log(editForm);
-    setIsEditing(false);
-    if (editForm.id === 0) {
+    setAddressLoading(true);
+    if (address.id === 0) {
       mutateCreate(editForm, {
         onSuccess: (response) => {
-          setEditForm((prev) => ({ ...prev, id: response.id }));
+          setShippingAddress(response);
+          setIsEditing(false);
+          setAddressLoading(false);
         },
         onError: (error) => {
           console.log(error);
@@ -34,7 +63,9 @@ function ShippingAddressForm() {
     } else {
       mutatePatch(editForm, {
         onSuccess: (response) => {
-          console.log(response);
+          setShippingAddress(response);
+          setIsEditing(false);
+          setAddressLoading(false);
         },
         onError: (error) => {
           console.log(error);
@@ -48,12 +79,17 @@ function ShippingAddressForm() {
     setIsEditing(false);
   };
 
-  const handleInputChange = (field: keyof ShippingAddress, value: string) => {
-    setEditForm(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
+  useEffect(() => {
+    if (address) {
+      setValue('name', address.name);
+      setValue('phone', address.phone);
+      setValue('address1', address.address1);
+      setValue('address2', address.address2);
+      setValue('city', address.city);
+      setValue('province', address.province);
+      setValue('zipcode', address.zipcode);
+    }
+  }, [address, setValue]);
 
   return (
     <div className="bg-white rounded-lg shadow-sm overflow-hidden">
@@ -62,14 +98,39 @@ function ShippingAddressForm() {
           <Truck className="text-blue-600" size={20} />
           <h2 className="font-semibold text-lg">ที่อยู่จัดส่ง</h2>
         </div>
-        {isEditing && (
+        {isEditing ? (
           <div className="flex items-center gap-2">
             <button
               onClick={handleSave}
               className="flex items-center gap-1 px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm"
             >
-              <Save size={16} />
-              บันทึก
+              {addressLoading ? (
+                <span className="flex items-center">
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-700"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24">
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  กำลังดำเนินการ...
+                </span>
+              ) : (
+                <>
+                  <Save size={16} />
+                  บันทึก
+                </>
+              )}
             </button>
             <button
               onClick={handleCancel}
@@ -79,6 +140,14 @@ function ShippingAddressForm() {
               ยกเลิก
             </button>
           </div>
+        ) : (
+          <button
+            onClick={handleEdit}
+            className="flex items-center gap-1 mt-4 text-blue-600 text-sm font-medium hover:text-blue-700"
+          >
+            <Edit2 size={16} />
+            แก้ไขที่อยู่
+          </button>
         )}
       </div>
 
@@ -100,13 +169,6 @@ function ShippingAddressForm() {
                 {address.address1}, {address.address2}, {address.city}, {address.province}, {address.zipcode}
               </p>
             </div>
-            <button
-              onClick={handleEdit}
-              className="flex items-center gap-1 mt-4 text-blue-600 text-sm font-medium hover:text-blue-700"
-            >
-              <Edit2 size={16} />
-              แก้ไขที่อยู่
-            </button>
           </div>
         ) : (
           // Edit Mode
@@ -118,38 +180,33 @@ function ShippingAddressForm() {
                   ชื่อ-สกุล / บริษัท
                 </label>
                 <input
-                  type="text"
-                  value={editForm.name}
-                  onChange={(e) => handleInputChange('name', e.target.value)}
+                  {...register('name')}
+                  onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="ชื่อ"
                 />
               </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <Phone size={16} className="inline mr-1" />
+                  เบอร์โทรศัพท์
+                </label>
+                <input
+                  {...register('phone')}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="เบอร์โทรศัพท์"
+                />
+              </div>
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                <Phone size={16} className="inline mr-1" />
-                เบอร์โทรศัพท์
-              </label>
-              <input
-                type="tel"
-                value={editForm.phone}
-                onChange={(e) => handleInputChange('phone', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="เบอร์โทรศัพท์"
-              />
-            </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 <MapPin size={16} className="inline mr-1" />
                 เลขที่บ้าน / หมู่ที่ / ซอย / ถนน / หมู่บ้าน
               </label>
               <input
-                type="text"
-                value={editForm.address1}
-                onChange={(e) => handleInputChange('address1', e.target.value)}
+                {...register('address1')}
+                onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="ที่อยู่"
               />
@@ -161,9 +218,8 @@ function ShippingAddressForm() {
                 แขวง
               </label>
               <input
-                type="text"
-                value={editForm.address2}
-                onChange={(e) => handleInputChange('address2', e.target.value)}
+                {...register('address2')}
+                onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="ที่อยู่"
               />
@@ -171,37 +227,34 @@ function ShippingAddressForm() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
                   อำเภอ
                 </label>
                 <input
-                  type="text"
-                  value={editForm.city}
-                  onChange={(e) => handleInputChange('city', e.target.value)}
+                  {...register('city')}
+                  onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="เขต/อำเภอ"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="province" className="block text-sm font-medium text-gray-700 mb-1">
                   จังหวัด
                 </label>
                 <input
-                  type="text"
-                  value={editForm.province}
-                  onChange={(e) => handleInputChange('province', e.target.value)}
+                  {...register('province')}
+                  onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="จังหวัด"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="zipcode" className="block text-sm font-medium text-gray-700 mb-1">
                   รหัสไปรษณีย์
                 </label>
                 <input
-                  type="text"
-                  value={editForm.zipcode}
-                  onChange={(e) => handleInputChange('zipcode', e.target.value)}
+                  {...register('zipcode')}
+                  onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="รหัสไปรษณีย์"
                 />

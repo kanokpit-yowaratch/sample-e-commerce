@@ -1,4 +1,4 @@
-import { ShippingAddress } from '@/types/address';
+import { sampleAddress, ShippingAddress } from '@/types/address';
 
 export function addressToReadableText(address: ShippingAddress): string {
   const parts = [
@@ -14,21 +14,22 @@ export function addressToReadableText(address: ShippingAddress): string {
   return parts.join(' | ');
 }
 
-export async function userAddress() {
+export async function userAddress(): Promise<ShippingAddress> {
   try {
     const defaultAddress = await fetch('/api/protected/user/default-address', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     });
     if (defaultAddress.ok) {
-      const data = await defaultAddress.json();
-      return data;
-    } else {
-      return 0;
+      const data: ShippingAddress = await defaultAddress.json();
+      if (data?.id) {
+        return data;
+      }
     }
+    return sampleAddress;
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Failed to sync cart to DB';
     console.log(message);
-    return 0;
+    return sampleAddress;
   }
 }
