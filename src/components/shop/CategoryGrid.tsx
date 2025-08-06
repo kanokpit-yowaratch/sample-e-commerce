@@ -1,13 +1,10 @@
 'use client';
 
 import React from 'react';
-import { useItems } from '@/hooks/useQueryStoreFront';
 import { Category } from '@prisma/client';
 import Link from 'next/link';
 
-function CategoryGrid() {
-	const { data: categories } = useItems<Category[]>('categories');
-
+function CategoryGrid({ categories }: Readonly<{ categories: Category[] }>) {
 	const commonStyles =
 		'relative flex items-center justify-center p-4 text-center text-white text-2xl font-semibold h-full z-10 transition-all duration-300';
 	const hoverStyles = 'hover:scale-110 hover:[text-shadow:var(--glow-color)]';

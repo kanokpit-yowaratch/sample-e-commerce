@@ -15,7 +15,7 @@ export async function read<T>(url: string): Promise<T> {
 
 export async function readWithRevalidate<T>(url: string): Promise<T> {
 	const response = await fetch(url, {
-		next: { revalidate: 60 }, // update data every 60 seconds
+		next: { revalidate: 60 * 10 }, // update data every 10 minutes
 	});
 
 	if (!response.ok) {
