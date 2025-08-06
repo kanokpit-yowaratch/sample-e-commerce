@@ -9,18 +9,28 @@ import useCartStore from '@/stores/zustand/useCartStore';
 import useBuyNowStore from '@/stores/zustand/useBuyNowStore';
 import ShippingAddressForm from './ShippingAddressForm';
 import { CheckCircle, Package } from 'lucide-react';
-import { userAddress } from '@/lib/address';
+import { userAddress, addressToReadableText, validateAddress } from '@/lib/address';
 import useShippingAddressStore from '@/stores/zustand/useShippingAddressStore';
 import NextImage from 'next/image';
+import useCheckoutStore from '@/stores/zustand/useCheckoutStore';
+import { useCreateItem } from '@/hooks/useQueryProtected';
+import { OrderRequest, OrderResponse } from '@/types/order';
+import PromptpayGenerator from './PromptpayGenerator';
+import { useLoginStore } from '@/stores/zustand/loginStore';
 
 function CheckoutMainPage({ source }: Readonly<CheckoutProps>) {
   const { data: session } = useSession();
   const { items: itemsFromCart } = useCartStore();
   const { items: itemsFromBuyNow } = useBuyNowStore();
-  const { shippingFee, setShippingAddress } = useShippingAddressStore();
+  const { address, shippingFee, setShippingAddress } = useShippingAddressStore();
+  const { addToCheckout, updateOrder, orderId, order_status } = useCheckoutStore();
+  const [isCheckoutLoading, setIsCheckoutLoading] = useState<boolean>(false);
+  const { mutate: mutateCreate } = useCreateItem<OrderRequest, OrderResponse>('orders');
   const [products, setProducts] = useState<ProductCart[]>([]);
+  const [error, setError] = useState<string>('');
   const [subtotal, setSubtotal] = useState(0);
   const [total, setTotal] = useState(0);
+  const { openPopup } = useLoginStore();
 
   const calculationTotal = (products: ProductCart[]) => {
     const subtotalCalc = products.reduce((sum, product) => sum + (product.price * product.quantity), 0);
@@ -37,7 +47,52 @@ function CheckoutMainPage({ source }: Readonly<CheckoutProps>) {
   }
 
   const onCheckOut = async () => {
-    // Send Request Here
+    if (!session?.user || products.length === 0) {
+      openPopup();
+      return;
+    }
+    setIsCheckoutLoading(true);
+    setError('');
+    if (!validateAddress(address)) {
+      setError('กรุณากรอกที่อยู่ในการจัดส่งให้ครบถ้วน');
+      setIsCheckoutLoading(false);
+      return;
+    }
+    const shippingAddress = addressToReadableText(address);
+    if (shippingAddress?.trim() === '') {
+      setError('กรุณาระบุที่อยู่ในการจัดส่ง');
+      setIsCheckoutLoading(false);
+      return;
+    }
+    if (products.length > 0) {
+      const requestOrder: OrderRequest = {
+        subtotal,
+        shippingFee,
+        total,
+        paid_amount: total,
+        paymentMethod: 'promptpay',
+        shippingAddress,
+        order_status: 'CREATED',
+        orderItems: products.map((product) => ({
+          productId: product.id,
+          name: product.name,
+          quantity: product.quantity,
+          unit_price: product.price,
+          subtotal: product.price * product.quantity,
+        })),
+      };
+      mutateCreate(requestOrder, {
+        onSuccess: (response) => {
+          addToCheckout(requestOrder);
+          updateOrder(response.id);
+        },
+        onError: (error) => {
+          const message = error instanceof Error ? error.message : 'Create order failed.';
+          console.log(message);
+          setIsCheckoutLoading(false);
+        },
+      });
+    }
   };
 
   useEffect(() => {
@@ -123,14 +178,38 @@ function CheckoutMainPage({ source }: Readonly<CheckoutProps>) {
                   <span className="text-blue-600">฿{total.toLocaleString()}</span>
                 </div>
               </div>
+              {!orderId ? (
+                <>
+                  <div className="flex flex-col mb-2 text-sm">
+                    {!validateAddress(address) && (
+                      <div className="text-red-700">* กรุณากรอกที่อยู่ในการจัดส่งให้ครบถ้วน</div>
+                    )}
+                  </div>
+                  <button
+                    className={`w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none`}
+                    disabled={
+                      isCheckoutLoading ||
+                      !!error ||
+                      !validateAddress(address)
+                    }
+                    onClick={onCheckOut}>
+                    <CheckCircle size={20} />
+                    ยืนยันการสั่งซื้อ
+                  </button>
+                </>
 
-              <button
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors"
-                onClick={onCheckOut}>
-                <CheckCircle size={20} />
-                ยืนยันการสั่งซื้อ
-              </button>
-
+              ) : (
+                <>
+                  {(total > 0 || order_status !== 'PROCESSING') && <PromptpayGenerator total={total} />}
+                  <button
+                    type="button"
+                    className={`w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none`}
+                    disabled={true}
+                  >
+                    อัพโหลดสลิป
+                  </button>
+                </>
+              )}
               <p className="text-xs text-gray-500 mt-4 text-center">
                 การสั่งซื้อของคุณจะได้รับการยืนยันหลังจากที่เราได้รับการชำระเงิน
               </p>

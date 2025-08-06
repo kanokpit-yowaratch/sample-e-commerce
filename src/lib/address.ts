@@ -33,3 +33,10 @@ export async function userAddress(): Promise<ShippingAddress> {
     return sampleAddress;
   }
 }
+
+export function validateAddress(address: ShippingAddress): boolean {
+  if (address.name && address.phone && address.address1 && address.address2 && address.city && address.province && address.zipcode) {
+    return true;
+  }
+  return false;
+}

@@ -22,6 +22,7 @@ model User {
 
   carts     Cart[]    @relation("UserCart")
   addresses Address[] @relation("UserAddress")
+  orders    Order[]   @relation("UserOrder")
 }
 
 enum Role {
@@ -51,9 +52,10 @@ model Product {
   category   Category @relation("ProductCategory", fields: [categoryId], references: [id])
   categoryId Int
 
-  stocks    Stock[]        @relation("ProductStock")
-  images    ProductImage[] @relation("ProductImage")
-  cartItems CartItem[]     @relation("ProductToCartItems")
+  stocks     Stock[]        @relation("ProductStock")
+  images     ProductImage[] @relation("ProductImage")
+  cartItems  CartItem[]     @relation("ProductToCartItems")
+  orderItems OrderItem[]    @relation("ProductToOrderItems")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -119,6 +121,79 @@ enum CartStatus {
 enum ImageType {
   cover
   thumbnail
+}
+model Order {
+  id              Int         @id @default(autoincrement())
+  orderNumber     String      @unique
+  shippingAddress String
+  subtotal        Decimal     @db.Decimal(10, 2)
+  shippingFee     Decimal     @db.Decimal(10, 2)
+  total           Decimal     @db.Decimal(10, 2)
+  status          OrderStatus @default(CREATED)
+  notes           String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user                User                  @relation("UserOrder", fields: [userId], references: [id])
+  userId              String
+  orderItems          OrderItem[]           @relation("OrderToItems")
+  orderPaymentHistory OrderPaymentHistory[] @relation("OrderToPaymentHistory")
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  quantity  Int
+  unitPrice Decimal  @db.Decimal(10, 2)
+  subtotal  Decimal  @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  order     Order   @relation("OrderToItems", fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   Int
+  product   Product @relation("ProductToOrderItems", fields: [productId], references: [id])
+  productId Int
+
+  @@unique([orderId, productId])
+  @@map("order_items")
+}
+
+enum OrderStatus {
+  CREATED // สร้างออเดอร์
+  PROCESSING // อยู่ระหว่างดำเนินการชำระเงิน
+  COMPLETED // ชำระเงินเสร็จสิ้น
+  CANCELLED // ยกเลิกรายการ
+  REFUNDED // คืนเงินลูกค้า
+}
+
+enum OrderPaymentStatus {
+  PAID // รับเงินลูกค้า
+  CANCELLED // ยกเลิกรายการรับเงิน
+  REFUNDED // คืนเงินลูกค้า
+}
+
+model OrderPaymentHistory {
+  id             Int                @id @default(autoincrement())
+  paid_amount    Decimal            @default(0) @db.Decimal(10, 2)
+  payment_method PaymentMethod      @default(PROMPTPAY)
+  slip_path      String? // suport cash on delivery or no slip case
+  status         OrderPaymentStatus
+  notes          String?
+  created_at     DateTime           @default(now())
+
+  order   Order @relation("OrderToPaymentHistory", fields: [orderId], references: [id], onDelete: Cascade)
+  orderId Int
+
+  @@map("order_payment_history")
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  BANK_TRANSFER
+  PROMPTPAY
+  CASH_ON_DELIVERY
 }
 
 model Address {
