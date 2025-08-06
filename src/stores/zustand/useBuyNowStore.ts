@@ -23,6 +23,7 @@ const useBuyNowStore = create<BuyNowState>()((set, get) => ({
 			total: total + product.price,
 		});
 	},
+	reset: () => set({ items: [], total: 0 }),
 }));
 
 export default useBuyNowStore;

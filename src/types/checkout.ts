@@ -8,4 +8,5 @@ export interface BuyNowState {
   items: ProductCart[];
   total: number;
   addToBuyNow: (product: ProductCart) => Promise<void>;
+  reset: () => void;
 }
