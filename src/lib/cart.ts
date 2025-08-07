@@ -158,7 +158,7 @@ export async function syncCart(data: CartSchema, userId: string) {
     // localStorage was clear or expire
     const cartItems = await prisma.cartItem.findMany({
       where: {
-        cartId: currentCart?.id,
+        cartId: currentCart.id,
       },
     });
 
