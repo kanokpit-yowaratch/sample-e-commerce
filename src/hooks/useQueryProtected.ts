@@ -41,10 +41,11 @@ export function useItemsWithPagination<T, TPagination extends PaginationResponse
   });
 }
 
-export function useItem<T>(moduleName: string, id: string) {
+export function useItem<T>(moduleName: string, id: string | number) {
   return useQuery<T, Error>({
     queryKey: [moduleName, id],
     queryFn: () => read<T>(`${DASHBOARD_API}/${moduleName}/${id}`),
+    enabled: id != null && id != 0,
   });
 }
 
@@ -84,7 +85,7 @@ export function useDeleteItem<TId extends string | number>(moduleName: string) {
   });
 }
 
-export function useUploadCover<T>(moduleName: string) {
+export function useUpload<T>(moduleName: string) {
   const queryClient = useQueryClient();
   return useMutation<T, Error, FormData>({
     mutationFn: (data) => upload<T>(`${DASHBOARD_API}/${moduleName}`, data),

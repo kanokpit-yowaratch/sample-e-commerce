@@ -102,6 +102,10 @@ export async function syncCart(data: CartSchema, userId: string) {
     },
   });
 
+  if (!currentCart?.id) {
+    return [];
+  }
+
   if (data.cart.items.length !== 0) {
     const dbCartItems = await getCartItems(userId);
     const dbIds = dbCartItems.map((item) => item.id);

@@ -28,3 +28,12 @@ export const mapIcon = (label: string): LucideIcon => {
 			return Home;
 	}
 }
+
+export const thaiFormatDate = (dateString: string = '') => {
+	const date = dateString ? new Date(dateString) : new Date();
+	return date.toLocaleDateString('th-TH', {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+	});
+};

@@ -30,7 +30,7 @@ const LoginPopup = () => {
 				<div className="space-y-4">
 					<button
 						onClick={() => signIn('google')}
-						className="flex items-center justify-center w-full gap-3 py-3 px-4 bg-white hover:bg-gray-50 border border-gray-300 rounded-md text-gray-800 font-medium transition duration-150">
+						className="flex items-center justify-center w-full gap-3 py-3 px-4 bg-white hover:bg-gray-50 border border-gray-300 rounded-md text-gray-800 font-medium transition duration-150 cursor-pointer">
 						<svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
 							<g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
 								<path
