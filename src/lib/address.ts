@@ -14,6 +14,21 @@ export function addressToReadableText(address: ShippingAddress): string {
   return parts.join(' | ');
 }
 
+export const parseAddress = (address: string) => {
+  if (!address) {
+    return { name: '', phone: '', addressText: '' };
+  }
+  const parts = address?.split(' | ');
+  if (parts.length > 0) {
+    const name = parts[0]?.replace('ชื่อ: ', '') || '';
+    const phone = parts[1]?.replace('โทร: ', '') || '';
+    const addressText = parts[2]?.replace('ที่อยู่: ', '') || '';
+    return { name, phone, addressText };
+  } else {
+    return { name: '', phone: '', addressText: '' };
+  }
+};
+
 export async function userAddress(): Promise<ShippingAddress> {
   try {
     const defaultAddress = await fetch('/api/protected/user/default-address', {

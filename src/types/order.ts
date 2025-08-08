@@ -1,6 +1,13 @@
-import { OrderStatus } from '@prisma/client';
+import { Order, OrderItem, OrderPaymentHistory, OrderStatus } from '@prisma/client';
 
 export type PaymentMethod = 'credit_card' | 'bank_transfer' | 'promptpay';
+
+export type OrderHistory = Pick<
+  Order,
+  'id' | 'orderNumber' | 'total' | 'shippingAddress' | 'status' | 'createdAt' | 'updatedAt'
+> & {
+  paid_amount: number;
+};
 
 export type CheckoutProps = {
   source: string;
@@ -48,3 +55,9 @@ export type PromptpayScannerProps = {
 export type OrderResponse = {
   id: number;
 };
+
+export type OrderSet = {
+  order: Order;
+  orderItems: OrderItem[];
+  orderPaymentHistory: OrderPaymentHistory[];
+}

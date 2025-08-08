@@ -17,20 +17,23 @@ import { useCreateItem } from '@/hooks/useQueryProtected';
 import { OrderRequest, OrderResponse } from '@/types/order';
 import PromptpayGenerator from './PromptpayGenerator';
 import { useLoginStore } from '@/stores/zustand/loginStore';
+import { useRouter } from 'next/navigation';
 
 function CheckoutMainPage({ source }: Readonly<CheckoutProps>) {
   const { data: session } = useSession();
   const { items: itemsFromCart } = useCartStore();
   const { items: itemsFromBuyNow } = useBuyNowStore();
   const { address, shippingFee, setShippingAddress } = useShippingAddressStore();
-  const { addToCheckout, updateOrder, orderId, order_status } = useCheckoutStore();
+  const { addToCheckout, updateOrder, orderId, order_status, updatePaidAmount } = useCheckoutStore();
   const [isCheckoutLoading, setIsCheckoutLoading] = useState<boolean>(false);
   const { mutate: mutateCreate } = useCreateItem<OrderRequest, OrderResponse>('orders');
   const [products, setProducts] = useState<ProductCart[]>([]);
   const [error, setError] = useState<string>('');
   const [subtotal, setSubtotal] = useState(0);
   const [total, setTotal] = useState(0);
+  const [isGoUploadSlip, setIsGoUploadSlip] = useState(false);
   const { openPopup } = useLoginStore();
+  const router = useRouter();
 
   const calculationTotal = (products: ProductCart[]) => {
     const subtotalCalc = products.reduce((sum, product) => sum + (product.price * product.quantity), 0);
@@ -93,6 +96,12 @@ function CheckoutMainPage({ source }: Readonly<CheckoutProps>) {
         },
       });
     }
+  };
+
+  const onGoUploadSlip = () => {
+    updatePaidAmount(total);
+    setIsGoUploadSlip(true);
+    router.push('/payment-request');
   };
 
   useEffect(() => {
@@ -204,7 +213,8 @@ function CheckoutMainPage({ source }: Readonly<CheckoutProps>) {
                   <button
                     type="button"
                     className={`w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none`}
-                    disabled={true}
+                    onClick={onGoUploadSlip}
+                    disabled={isGoUploadSlip}
                   >
                     อัพโหลดสลิป
                   </button>

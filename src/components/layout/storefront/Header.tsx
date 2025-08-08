@@ -6,7 +6,7 @@ import useCartStore from '@/stores/zustand/useCartStore';
 import { useLoginStore } from '@/stores/zustand/loginStore';
 import Link from 'next/link';
 import NextImage from 'next/image';
-import { ShoppingCart, Menu, X, LogOut } from 'lucide-react';
+import { ShoppingCart, Menu, X, LogOut, Clock } from 'lucide-react';
 
 const Header = () => {
 	const { data: session } = useSession();
@@ -96,18 +96,12 @@ const Header = () => {
 												</div>
 											</div>
 
-											<div className="py-2">
-												{/* <div className="px-4 py-2 flex items-center space-x-3 hover:bg-gray-50 cursor-pointer">
-													<Heart className="w-4 h-4 text-gray-500" />
-													<span className="text-sm text-gray-700">รายการโปรด</span>
-												</div> */}
-												{/* <div className="px-4 py-2 flex items-center space-x-3 hover:bg-gray-50 cursor-pointer">
-													<Settings className="w-4 h-4 text-gray-500" />
-													<span className="text-sm text-gray-700">ตั้งค่า</span>
-												</div> */}
+											<div className="px-4 py-2 flex items-center space-x-3 hover:bg-gray-50 cursor-pointer">
+												<Clock className="w-4 h-4 text-gray-500" />
+												<Link href={'/order-history'} className="text-sm text-gray-700">ประวัติการสั่งซื้อ</Link>
 											</div>
 
-											<div className="border-t pt-2">
+											<div className="border-t border-t-gray-300">
 												<button
 													type="button"
 													onClick={onSignOut}
@@ -146,8 +140,8 @@ const Header = () => {
 				<div className="md:hidden bg-white border-t">
 					<div className="px-4 py-3 space-y-3">
 						{session ? (
-							<div className="space-y-2">
-								<div className="flex items-center space-x-3 py-2">
+							<div className="w-full">
+								<div className="flex items-center space-x-3 mb-2">
 									<div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white">
 										<NextImage
 											src={session.user.image ?? `/images/user.png`}
@@ -162,11 +156,17 @@ const Header = () => {
 										<p className="font-semibold text-gray-800">{session.user.name}</p>
 									</div>
 								</div>
-								<button
-									type="button"
-									onClick={onSignOut} className="w-full text-left py-2 text-red-600 font-medium">
-									ออกจากระบบ
-								</button>
+								<Link href={'/order-history'} className="w-full flex items-center gap-2 py-2 space-x-3 hover:bg-gray-50 text-sm text-gray-700">
+									<Clock className="w-4 h-4 text-gray-500" />
+									ประวัติการสั่งซื้อ
+								</Link>
+								<div className="flex items-center">
+									<button
+										type="button"
+										onClick={onSignOut} className="w-full text-left py-1 text-red-600 font-medium cursor-pointer">
+										ออกจากระบบ
+									</button>
+								</div>
 							</div>
 						) : (
 							<button

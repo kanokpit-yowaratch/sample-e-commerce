@@ -1,9 +1,10 @@
 import React from 'react';
+import OrderHistoryList from '@/components/shop/order-history/OrderHistory';
 
 function page() {
   return (
-    <div>Order history</div>
-  )
+    <OrderHistoryList />
+  );
 }
 
 export default page;
