@@ -42,19 +42,24 @@ function Sidebar() {
 
 	useEffect(() => {
 		refetch();
+	}, []);
+
+	useEffect(() => {
 		if (userPermissions) {
 			localStorage.setItem('user_permissions', JSON.stringify(userPermissions));
 			const menuList = userPermissions.filter((data) => {
 				return data.action === 'access_menu' && allowedMenus.includes(data.resource)
 			}).map((data) => {
 				return { icon: mapIcon(data.resource), label: data.resource, id: data.resource }
+			}).sort((a, b) => {
+				return allowedMenus.indexOf(a.id) - allowedMenus.indexOf(b.id);
 			});
 			setMenus(menuList);
 		} else {
 			localStorage.removeItem('user_permissions');
 			setMenus([]);
 		}
-	}, [userPermissions]);
+	}, [userPermissions, allowedMenus]);
 
 	return (
 		<div
