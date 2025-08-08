@@ -70,11 +70,7 @@ const OrderCard = ({ order }: { order: OrderHistory }) => {
           </div>
         </div>
         <div className={`px-3 py-1 rounded-md text-xs font-medium ${getOrderStatusColor(order.status)}`}>
-          {
-            order.status === 'PROCESSING' ?
-              'ชำระแล้วรอการตอบกลับการยืนยันจากร้านค้า' :
-              getOrderHistoryText(order.status ?? 'PROCESSING')
-          }
+          {getOrderHistoryText(order.status ?? 'PROCESSING')}
         </div>
       </div>
     </div>

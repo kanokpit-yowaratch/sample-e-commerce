@@ -72,8 +72,8 @@ export const getOrderStatusColor = (status: string) => {
 
 export function getOrderHistoryText(method: OrderStatus): string {
 	const statusMap = {
-		CREATED: 'ยังไม่ชำระ',
-		PROCESSING: 'ชำระบางส่วน',
+		CREATED: 'สร้างคำสั่งซื้อ',
+		PROCESSING: 'ชำระแล้ว รอตรวจสอบและยืนยัน',
 		COMPLETED: 'ชำระครบแล้ว',
 		CANCELLED: 'ยกเลิก',
 		REFUNDED: 'คืนเงิน',
