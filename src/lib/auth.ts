@@ -118,10 +118,9 @@ export const authOptions: AuthOptions = {
         if (profile?.email) {
           const existingUser = await prisma.user.findUnique({
             where: {
-              email: profile?.email,
+              email: profile.email,
             },
           });
-
           if (!existingUser) {
             await prisma.user.create({
               data: {

@@ -57,6 +57,9 @@ export async function PATCH(req: Request, { params }: IdParamProps) {
   try {
     const { name, phone, role } = await req.json();
     const { id } = await params;
+    if (!id) {
+      throw new ApiError('Not Found user', 404);
+    }
     return Response.json(
       await prisma.user.update({
         where: { id },

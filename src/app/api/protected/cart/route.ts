@@ -7,16 +7,15 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const data = cartSchema.parse(body); const user = await prisma.user.findFirst({
+    const data = cartSchema.parse(body);
+    const user = await prisma.user.findFirst({
       where: {
         email: data.userEmail,
       },
     });
-
     if (!user) {
-      return NextResponse.json({ error: 'Invalid data' }, { status: 400 });
+      throw new ApiError('Not Found user', 404);
     }
-
     const userId = user.id;
     const cart = await prisma.cart.findFirst({
       where: {
