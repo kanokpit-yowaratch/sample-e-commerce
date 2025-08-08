@@ -98,7 +98,11 @@ const Header = () => {
 
 											<div className="px-4 py-2 flex items-center space-x-3 hover:bg-gray-50 cursor-pointer">
 												<Clock className="w-4 h-4 text-gray-500" />
-												<Link href={'/order-history'} className="text-sm text-gray-700">ประวัติการสั่งซื้อ</Link>
+												<Link
+													href={'/order-history'}
+													className="text-sm text-gray-700"
+													onClick={() => setShowMobileMenu(false)}
+												>ประวัติการสั่งซื้อ</Link>
 											</div>
 
 											<div className="border-t border-t-gray-300">
@@ -156,7 +160,11 @@ const Header = () => {
 										<p className="font-semibold text-gray-800">{session.user.name}</p>
 									</div>
 								</div>
-								<Link href={'/order-history'} className="w-full flex items-center gap-2 py-2 space-x-3 hover:bg-gray-50 text-sm text-gray-700">
+								<Link
+									href={'/order-history'}
+									className="w-full flex items-center gap-2 py-2 space-x-3 hover:bg-gray-50 text-sm text-gray-700"
+									onClick={() => setShowMobileMenu(false)}
+								>
 									<Clock className="w-4 h-4 text-gray-500" />
 									ประวัติการสั่งซื้อ
 								</Link>
