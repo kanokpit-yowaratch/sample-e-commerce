@@ -8,7 +8,7 @@ export default function Layout({ children }: Readonly<{ children: ReactNode }>) 
 	return (
 		<div>
 			<Header />
-			<main className="min-h-screen">{children}</main>
+			<main>{children}</main>
 			<SyncCartOnLogin />
 			<LoginPopup />
 			<Footer />
