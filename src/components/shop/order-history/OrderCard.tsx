@@ -72,7 +72,7 @@ const OrderCard = ({ order }: { order: OrderHistory }) => {
         <div className={`px-3 py-1 rounded-md text-xs font-medium ${getOrderStatusColor(order.status)}`}>
           {
             order.status === 'PROCESSING' ?
-              'จ่ายมัดจำแล้วรอการตอบกลับการยืนยันจากร้านค้า' :
+              'ชำระแล้วรอการตอบกลับการยืนยันจากร้านค้า' :
               getOrderHistoryText(order.status ?? 'PROCESSING')
           }
         </div>

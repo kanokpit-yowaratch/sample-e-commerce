@@ -214,7 +214,7 @@ const UploadSlip = () => {
 				</div>
 				{requestSuccess ? (
 					<div className="flex justify-center text-green-800 font-medium text-md my-2">
-						{`กำลังรอร้านค้าตรวจสอบยอดมัดจำ เพื่อยืนยันรับออเดอร์`}
+						{`กำลังรอร้านค้าตรวจสอบยอด เพื่อยืนยันรับออเดอร์`}
 					</div>
 				) : (
 					<button
