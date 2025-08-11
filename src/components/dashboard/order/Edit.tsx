@@ -1,0 +1,281 @@
+'use client';
+
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { IdParams } from '@/types/common';
+import { OrderStatus } from '@prisma/client';
+import { OrderAdminResponse } from '@/types/order';
+import { useDeleteItem, useItem, usePatchItem } from '@/hooks/useQueryDashboard';
+import { calculateTotal, getImageSrc, getOrderHistoryText } from '@/lib/common';
+import { MapPin, Phone, SaveIcon, Settings, Trash, User } from 'lucide-react';
+import { useIsClient } from '@/hooks/useIsClient';
+import { parseAddress } from '@/lib/address';
+import NextImage from 'next/image';
+import Link from 'next/link';
+
+const statusList = Object.entries(OrderStatus).map(([key, value]) => ({
+	value: key,
+	label: getOrderHistoryText(value),
+}));
+
+function EditOrder({ id }: Readonly<IdParams>) {
+	const { data, refetch, isLoading } = useItem<OrderAdminResponse>('orders', id);
+	const { name, phone, addressText } = parseAddress(data?.shippingAddress ?? '');
+	const [selectedStatus, setSelectedStatus] = useState<string | number>(data?.status ?? 'PROCESSING');
+	const { mutate: mutateUpdate } = usePatchItem('orders', id);
+	const { mutate: mutateDelete } = useDeleteItem<number>('order-status-history');
+	const [messageSuccess, setMessageSuccess] = useState<string>('');
+	const [preTotal, setPreTotal] = useState<number>(0);
+	const [isLoadProcess, setIsLoadProcess] = useState<boolean>(false);
+	const isClient = useIsClient();
+
+	const onUpdateOrderStatus = useCallback(() => {
+		mutateUpdate({ order_status: selectedStatus }, {
+			onSuccess: () => {
+				setMessageSuccess('Order status updated successfully');
+			},
+		});
+	}, [mutateUpdate, selectedStatus, setMessageSuccess]);
+
+	const onDeletePaymentHistory = (histId: number): void => {
+		const result = confirm('ต้องการลบรายการนี้จริงๆ หรือไม่?');
+		if (result) {
+			setIsLoadProcess(true);
+			mutateDelete(histId, {
+				onSuccess: () => {
+					refetch();
+					setIsLoadProcess(false);
+				},
+				onError: (error) => {
+					console.log(error);
+					setIsLoadProcess(false);
+				}
+			});
+		}
+	};
+
+	const onSelectedStatus = (e: ChangeEvent<HTMLSelectElement>) => {
+		const { value } = e.target;
+		setSelectedStatus(value);
+	}
+
+	useEffect(() => {
+		setSelectedStatus(data?.status ?? 'PROCESSING');
+	}, [data?.status]);
+
+	useEffect(() => {
+		if (data?.orderPaymentHistory[0]) {
+			const leftPay = data.orderPaymentHistory[0]?.paid_amount;
+			setPreTotal(Number(leftPay));
+		}
+	}, [data?.orderPaymentHistory]);
+
+	if (!isClient) {
+		return null;
+	}
+
+	return (
+		<>
+			<Link href={'/dashboard/orders'} className="p-2 bg-blue-600 text-white cursor-pointer rounded-md">
+				Back
+			</Link>
+			<div className="mt-4 mb-2 text-xl font-bold">แก้ไขคำสั่งซื้อ</div>
+			<div className="h-5">
+				{isLoading && <span>Loading...</span>}
+				{messageSuccess !== '' && <span>{messageSuccess}</span>}
+			</div>
+			<div className="flex flex-col gap-2">
+				<div className="grid grid-cols-1 md:grid-cols-2">
+					<div className="flex flex-col gap-2 text-gray-800">
+						<div>เลขที่คำสั่งซื้อ: #{data?.orderNumber}</div>
+						<div>ยอดที่ชำระ: {preTotal}</div>
+						<div className="bg-gray-50 rounded-md">
+							<div className="">ที่อยู่จัดส่ง</div>
+							<div className="space-y-1 mt-2">
+								<div className="flex -tems-center gap-4">
+									<div className="flex items-start space-x-3">
+										<div className="bg-slate-100 py-1 px-2 rounded-lg">
+											<User className="w-4 h-4 text-slate-600" />
+										</div>
+										<div>
+											<p className="text-slate-800">{name}</p>
+										</div>
+									</div>
+									<div className="flex items-start space-x-3">
+										<div className="bg-slate-100 py-1 px-2 rounded-lg">
+											<Phone className="w-4 h-4 text-slate-600" />
+										</div>
+										<div className="text-slate-800">{phone}</div>
+									</div>
+								</div>
+
+								<div className="flex items-start space-x-3">
+									<div className="bg-slate-100 py-1 px-2 rounded-lg">
+										<MapPin className="w-4 h-4 text-slate-600" />
+									</div>
+									<div>
+										<p className="text-slate-800">{addressText}</p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div className="flex gap-2 my-2">
+							สถานะคำสั่งซื้อ:
+							<span className="font-semibold text-gray-600">
+								{statusList.find(c => c.value === selectedStatus)?.label}
+							</span>
+						</div>
+					</div>
+					<div className="bg-white rounded-xl border border-gray-100 duration-300">
+						<div className="flex items-center justify-between p-2 bg-gray-300">
+							<span className="text-sm">จัดการสถานะคำสั่งซื้อ</span>
+							<button
+								className="flex items-center justify-center gap-1 w-35 p-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors cursor-pointer"
+								onClick={onUpdateOrderStatus}>
+								<SaveIcon />
+								บันทึกข้อมูล
+							</button>
+						</div>
+						<div className="p-2">
+							<select
+								// {...register('roleId', { valueAsNumber: true })}
+								className="w-full border rounded-md p-2"
+								onChange={onSelectedStatus}
+							>
+								<option value="">เลือกสถานะ</option>
+								{statusList.map((stt) => (
+									<option key={stt.label} value={stt.value}>
+										{stt.value}
+									</option>
+								))}
+							</select>
+						</div>
+					</div>
+				</div>
+				<div>
+					<div className="mb-1 text-gray-800">รายการสั่งซื้อ</div>
+					<div className="overflow-x-auto">
+						<table className="w-full">
+							<thead className="bg-gray-100">
+								<tr>
+									<th className="p-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+										รหัสรายการ
+									</th>
+									<th className="p-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+										สินค้า
+									</th>
+									<th className="p-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+										คำอธิบาย
+									</th>
+									<th className="p-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+										จำนวน
+									</th>
+									<th className="p-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+										ราคาต่อหน่วย
+									</th>
+									<th className="p-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+										รวม
+									</th>
+								</tr>
+							</thead>
+							<tbody className="bg-white divide-y divide-gray-200">
+								{data?.orderItems.map((item) => (
+									<tr key={item.id} className="hover:bg-gray-50 transition-colors duration-150">
+										<td className="p-2 whitespace-nowrap text-sm font-medium text-gray-900">#{item.id}</td>
+										<td className="p-2 whitespace-nowrap">
+											<div className="text-sm font-medium text-gray-900">{item.product.name}</div>
+										</td>
+										<td className="p-2">
+											<div className="text-sm text-gray-900">{item.product.description}</div>
+										</td>
+										<td className="p-2 whitespace-nowrap text-center">
+											{item.quantity}
+										</td>
+										<td className="p-2 whitespace-nowrap text-sm text-gray-900 text-right">
+											฿{item.unitPrice}
+										</td>
+										<td className="p-2 whitespace-nowrap text-sm font-medium text-gray-900 text-right">
+											฿
+											{calculateTotal(item.quantity, `${item.unitPrice}`)}
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+
+					<div className="px-3 py-1 bg-gray-200 border-t border-gray-300">
+						<div className="flex justify-between items-center">
+							<div className="text-sm text-gray-600">รวมทั้งหมด {data?.orderItems.length} รายการ</div>
+							<div className="text-gray-900">ยอดรวม: ฿{data?.total?.toString()}</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{
+				data?.orderPaymentHistory[0] && (
+					<div>
+						<div className="border border-gray-300 rounded-b-md">
+							<table className="w-full text-sm">
+								<thead className="bg-gray-50">
+									<tr>
+										<th className="p-2 text-right border-r border-gray-300">จำนวนที่ชำระ</th>
+										<th className="p-2 text-left">วันที่ชำระ</th>
+										<th className="p-2 text-left">สลิป</th>
+										<th className="p-2 text-left">บันทึกเพิ่มเติม</th>
+										<th className="p-2 text-left">ประเภทการชำระ</th>
+										<th className="p-2 text-left">สถานะคำสั่งซื้อ</th>
+										<th>
+											<div className="w-full flex justify-center">
+												<Settings />
+											</div>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td className="p-2 text-right">
+											{data?.orderPaymentHistory[0]?.paid_amount?.toString()}
+										</td>
+										<td>
+											{data?.orderPaymentHistory[0]?.created_at?.toString()}
+										</td>
+										<td>
+											<NextImage src={getImageSrc(data?.orderPaymentHistory[0]?.slip_path)} width={30} height={50} alt="สลิป" />
+										</td>
+										<td>
+											{data?.orderPaymentHistory[0]?.notes}
+										</td>
+										<td>
+											{data?.orderPaymentHistory[0]?.payment_method}
+										</td>
+										<td>
+											{data?.orderPaymentHistory[0]?.status}
+										</td>
+										<td>
+											<div className="w-full flex justify-center">
+												<button
+													type="button"
+													onClick={() => onDeletePaymentHistory(data?.orderPaymentHistory[0]?.id ?? 0)}
+													className={`flex items-center gap-1 text-xs bg-red-600 text-white py-1 px-2 rounded-md cursor-pointer hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transition-all`}
+													disabled={isLoadProcess}
+												>
+													<Trash size={16} />
+													<span>ลบบิล</span>
+												</button>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div className="flex justify-end right-3 my-2">
+							ยอดรวม:{' '}{data?.orderPaymentHistory[0]?.paid_amount?.toString()}/{data?.total?.toString()}
+						</div>
+					</div>
+				)
+			}
+		</>
+	);
+}
+
+export default EditOrder;

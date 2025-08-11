@@ -1,7 +1,8 @@
 import React from 'react';
+import OrderList from '@/components/dashboard/order/List';
 
 function page() {
-	return <div>Admin order..</div>;
+	return <OrderList />;
 }
 
 export default page;
