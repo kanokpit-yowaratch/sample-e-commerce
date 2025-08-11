@@ -55,7 +55,7 @@ export default function PromptpayGenerator({ total }: Readonly<{ total: number }
 			const pl = window.promptparse?.generate.anyId(baseOptions);
 			setPayload(pl);
 		}
-	}, [total, window.promptparse]);
+	}, [total, promptPayId, window.promptparse]);
 
 	if (!isLoaded) {
 		return (

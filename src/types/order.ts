@@ -61,3 +61,20 @@ export type OrderSet = {
   orderItems: OrderItem[];
   orderPaymentHistory: OrderPaymentHistory[];
 }
+
+export type OrderItemAdmin = {
+  id: number;
+  quantity: number;
+  unitPrice: number;
+  product: {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+  };
+};
+
+export type OrderAdminResponse = Order & {
+  orderItems: OrderItemAdmin[];
+  orderPaymentHistory: OrderPaymentHistory[];
+}

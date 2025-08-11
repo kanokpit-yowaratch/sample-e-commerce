@@ -44,14 +44,8 @@ export const thaiFormatPrice = (price: number) => {
 		style: 'currency',
 		currency: 'THB',
 		minimumFractionDigits: 0,
+		maximumFractionDigits: 2
 	}).format(price);
-};
-
-export const formatCurrency = (amount: number) => {
-	return new Intl.NumberFormat('th-TH', {
-		style: 'currency',
-		currency: 'THB',
-	}).format(amount);
 };
 
 export const getOrderStatusColor = (status: string) => {
@@ -80,3 +74,7 @@ export function getOrderHistoryText(method: OrderStatus): string {
 	};
 	return statusMap[method];
 }
+
+export const calculateTotal = (quantity: number, unitPrice: string) => {
+	return quantity * parseFloat(unitPrice);
+};

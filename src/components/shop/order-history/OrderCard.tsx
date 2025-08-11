@@ -2,7 +2,7 @@
 
 import { OrderHistory } from '@/types/order';
 import { parseAddress } from '@/lib/address';
-import { formatCurrency, getOrderHistoryText, getOrderStatusColor, thaiFormatDate, thaiFormatPrice } from '@/lib/common';
+import { thaiFormatPrice, getOrderHistoryText, getOrderStatusColor, thaiFormatDate } from '@/lib/common';
 import { Clock, MapPin, Package, Phone, User, Wallet } from "lucide-react";
 
 const OrderCard = ({ order }: { order: OrderHistory }) => {
@@ -46,18 +46,11 @@ const OrderCard = ({ order }: { order: OrderHistory }) => {
         </div>
         <div className="border-t py-2">
           <div className="grid grid-cols-2 gap-4">
-            {/* <div className="flex items-center space-x-2">
-							<Calendar className="h-4 w-4 text-gray-400" />
-							<div className="flex items-center gap-2">
-								<p className="text-xs text-gray-500">สั่งซื้อ</p>
-								<p className="text-sm font-medium text-gray-900">{thaiFormatDate(order.created_at.toString())}</p>
-							</div>
-						</div> */}
             <div className="flex items-center space-x-2">
               <Wallet className="h-4 w-4 text-gray-400" />
               <div className="flex items-center gap-2">
                 <p className="text-xs text-gray-500">ยอดที่ชำระ</p>
-                <p className="text-sm font-medium text-gray-900">{formatCurrency(order.paid_amount)}</p>
+                <p className="text-sm font-medium text-gray-900">{thaiFormatPrice(order.paid_amount)}</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
