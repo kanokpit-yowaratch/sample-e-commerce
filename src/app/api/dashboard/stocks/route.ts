@@ -1,9 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { ApiError } from '@/lib/errors';
 
 // Create Stock
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
 	const { productId, quantity } = await req.json();
 	try {
 		const newStock = await prisma.stock.create({
@@ -12,12 +11,12 @@ export async function POST(req: NextRequest) {
 				quantity,
 			},
 		});
-		return NextResponse.json(newStock, { status: 201 });
+		return Response.json(newStock, { status: 201 });
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+			return Response.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+		return Response.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
@@ -25,11 +24,11 @@ export async function POST(req: NextRequest) {
 export async function GET() {
 	try {
 		const categories = await prisma.stock.findMany();
-		return NextResponse.json(categories);
+		return Response.json(categories);
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+			return Response.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+		return Response.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }

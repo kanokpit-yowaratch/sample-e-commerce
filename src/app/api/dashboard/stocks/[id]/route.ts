@@ -1,10 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { IdParamProps } from '@/types/common';
 import { ApiError } from '@/lib/errors';
 
 // Get Single Product Stock
-export async function GET(req: NextRequest, { params }: IdParamProps) {
+export async function GET(req: Request, { params }: IdParamProps) {
 	const { id } = await params;
 	try {
 		const stock = await prisma.product.findUnique({
@@ -13,17 +12,17 @@ export async function GET(req: NextRequest, { params }: IdParamProps) {
 		if (!stock) {
 			throw new ApiError('Not found', 404);
 		}
-		return NextResponse.json(stock, { status: 200 });
+		return Response.json(stock, { status: 200 });
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+			return Response.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+		return Response.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
 // Update Product Stock
-export async function PUT(req: NextRequest, { params }: IdParamProps) {
+export async function PUT(req: Request, { params }: IdParamProps) {
 	const { id } = await params;
 	const stockId = parseInt(id);
 	try {
@@ -52,17 +51,17 @@ export async function PUT(req: NextRequest, { params }: IdParamProps) {
 			data: stock,
 		});
 
-		return NextResponse.json(updatedStock, { status: 200 });
+		return Response.json(updatedStock, { status: 200 });
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+			return Response.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+		return Response.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
 // Delete Product Stock
-export async function DELETE(req: NextRequest, { params }: IdParamProps) {
+export async function DELETE(req: Request, { params }: IdParamProps) {
 	const { id } = await params;
 	const stockId = parseInt(id);
 
@@ -79,11 +78,11 @@ export async function DELETE(req: NextRequest, { params }: IdParamProps) {
 			where: { id: stockId },
 		});
 
-		return NextResponse.json({ message: 'Deleted successfully' }, { status: 200 });
+		return Response.json({ message: 'Deleted successfully' }, { status: 200 });
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+			return Response.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+		return Response.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }

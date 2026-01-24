@@ -1,4 +1,3 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
 import { ApiError } from '@/lib/errors';
 import { generateOrderNumber } from '@/lib/order';
@@ -6,7 +5,7 @@ import prisma from '@/lib/prisma';
 import { checkUserExists } from '@/lib/user';
 import { OrderItemRequest } from '@/types/order';
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
 	try {
 		const userData = await getSession();
 		const existUser = await checkUserExists(userData?.user?.email ?? '');
@@ -54,7 +53,7 @@ export async function POST(req: NextRequest) {
 				}),
 			),
 		);
-		return NextResponse.json({ id: orderId }, { status: 200 });
+		return Response.json({ id: orderId }, { status: 200 });
 	} catch (error) {
 		if (error instanceof Error) {
 			return Response.json({ error: error.message }, { status: 500 });

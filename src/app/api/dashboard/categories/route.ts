@@ -1,4 +1,3 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { ApiError } from '@/lib/errors';
 import prisma from '@/lib/prisma';
 import { getCategoryByName } from '@/lib/category';
@@ -7,17 +6,17 @@ import { getCategoryByName } from '@/lib/category';
 export async function GET() {
 	try {
 		const categories = await prisma.category.findMany();
-		return NextResponse.json(categories, { status: 200 });
+		return Response.json(categories, { status: 200 });
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+			return Response.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+		return Response.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
 // Create Category
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
 	const { name } = await req.json();
 
 	try {
@@ -27,11 +26,11 @@ export async function POST(req: NextRequest) {
 		}
 
 		const newCategory = await prisma.category.create({ data: { name } });
-		return NextResponse.json(newCategory, { status: 201 });
+		return Response.json(newCategory, { status: 201 });
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+			return Response.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+		return Response.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }

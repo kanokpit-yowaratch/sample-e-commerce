@@ -1,10 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { ApiError } from '@/lib/errors';
 import prisma from '@/lib/prisma';
 import { ImageType, ProductImage } from '@prisma/client';
 import { getProductById } from '@/lib/product';
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
 	const formData = await req.formData();
 	const file = formData.get('file') as File;
 	const pId = formData.get('productId') as string;
@@ -62,11 +61,11 @@ export async function POST(req: NextRequest) {
 			},
 		});
 
-		return NextResponse.json({ data: pImage }, { status: 200 });
+		return Response.json({ data: pImage }, { status: 200 });
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+			return Response.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ Message: 'Failed to upload image', status: 500 });
+		return Response.json({ Message: 'Failed to upload image', status: 500 });
 	}
 }

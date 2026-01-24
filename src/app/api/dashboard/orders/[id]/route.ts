@@ -1,4 +1,3 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { Prisma } from '@prisma/client';
 import { ApiError } from '@/lib/errors';
 import prisma from '@/lib/prisma';
@@ -6,7 +5,7 @@ import { IdParamProps } from '@/types/common';
 import { getOrderById } from '@/lib/order';
 
 // Get Single Order
-export async function GET(req: NextRequest, { params }: IdParamProps) {
+export async function GET(req: Request, { params }: IdParamProps) {
 	const { id } = await params;
 	try {
 		const order = await getOrderById(parseInt(id));
@@ -60,17 +59,17 @@ export async function GET(req: NextRequest, { params }: IdParamProps) {
 				id: parseInt(id),
 			},
 		});
-		return NextResponse.json(orderDetail, { status: 200 });
+		return Response.json(orderDetail, { status: 200 });
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+			return Response.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+		return Response.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
 // Update Order
-export async function PUT(req: NextRequest, { params }: IdParamProps) {
+export async function PUT(req: Request, { params }: IdParamProps) {
 	const { id } = await params;
 	const orderId = parseInt(id);
 
@@ -80,18 +79,18 @@ export async function PUT(req: NextRequest, { params }: IdParamProps) {
 			throw new ApiError('Not Found order', 404);
 		}
 		// Add update here
-		return NextResponse.json({ message: 'Updated successfully' }, { status: 200 });
+		return Response.json({ message: 'Updated successfully' }, { status: 200 });
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+			return Response.json({ message: error.message }, { status: error.statusCode });
 		}
 		if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
 			const target = error.meta?.target;
 			if (Array.isArray(target) && target.includes('name')) {
-				return NextResponse.json({ message: 'This name is already in use.' }, { status: 400 });
+				return Response.json({ message: 'This name is already in use.' }, { status: 400 });
 			}
 		}
-		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+		return Response.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
@@ -115,7 +114,7 @@ export async function PATCH(req: Request, { params }: IdParamProps) {
 			updateData.shippingAddress = body.shipping_address;
 		}
 		if (Object.keys(updateData).length === 0) {
-			return NextResponse.json({ message: 'No valid fields to update' }, { status: 400 });
+			return Response.json({ message: 'No valid fields to update' }, { status: 400 });
 		}
 		const updateOrder = await prisma.order.update({
 			where: { id: orderId },
@@ -124,14 +123,14 @@ export async function PATCH(req: Request, { params }: IdParamProps) {
 		return Response.json(updateOrder, { status: 200 });
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+			return Response.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+		return Response.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
 // Delete Order
-export async function DELETE(req: NextRequest, { params }: IdParamProps) {
+export async function DELETE(req: Request, { params }: IdParamProps) {
 	const { id } = await params;
 	const orderId = parseInt(id);
 
@@ -145,11 +144,11 @@ export async function DELETE(req: NextRequest, { params }: IdParamProps) {
 			where: { id: orderId },
 		});
 
-		return NextResponse.json({ message: 'Deleted successfully' }, { status: 200 });
+		return Response.json({ message: 'Deleted successfully' }, { status: 200 });
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+			return Response.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+		return Response.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }

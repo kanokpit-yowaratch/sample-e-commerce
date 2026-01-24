@@ -1,10 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { checkUserExists, hashPassword } from '@/lib/user';
 import { ApiError } from '@/lib/errors';
 import { registerSchema } from '@/lib/schemas/register-schema';
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
 	try {
 		const { email, password, name, phone, role } = await req.json();
 
@@ -15,7 +14,7 @@ export async function POST(req: NextRequest) {
 
 		const existingUser = await checkUserExists(email);
 		if (existingUser) {
-			return NextResponse.json(
+			return Response.json(
 				{
 					success: false,
 					message: 'This email is already in use.',
@@ -42,10 +41,10 @@ export async function POST(req: NextRequest) {
 			user,
 		};
 
-		return NextResponse.json(response, { status: 201 });
+		return Response.json(response, { status: 201 });
 	} catch (error) {
 		console.error('Register error:', error);
-		return NextResponse.json(
+		return Response.json(
 			{
 				success: false,
 				message: 'Internal server error',

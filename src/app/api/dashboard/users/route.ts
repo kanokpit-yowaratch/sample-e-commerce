@@ -1,12 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { ApiError } from '@/lib/errors';
 import { SortOrder } from '@/types/common';
 import { checkUserExists, hashPassword } from '@/lib/user';
 
 // Get users with pagination
-export async function GET(req: NextRequest) {
-	const searchParams = req.nextUrl.searchParams;
+export async function GET(req: Request) {
+	const { searchParams } = new URL(req.url);
 	const search = searchParams.get('search') ?? '';
 	const perPage = parseInt(searchParams.get('perPage') ?? '10', 10) || 10;
 	const page = parseInt(searchParams.get('page') ?? '1', 10) || 1;
@@ -64,20 +63,20 @@ export async function GET(req: NextRequest) {
 		return Response.json(responseUsers, { status: 200 });
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+			return Response.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+		return Response.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
 // Create User
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
 	try {
 		const { name, email, password, role, phone } = await req.json();
 
 		const existingUser = await checkUserExists(email);
 		if (existingUser) {
-			return NextResponse.json(
+			return Response.json(
 				{
 					success: false,
 					message: 'This email is already in use.',
@@ -96,11 +95,11 @@ export async function POST(req: NextRequest) {
 				phone,
 			},
 		});
-		return NextResponse.json({ ...newUser, message: 'User created successfully' }, { status: 201 });
+		return Response.json({ ...newUser, message: 'User created successfully' }, { status: 201 });
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+			return Response.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ message: 'Failed to create user' }, { status: 500 });
+		return Response.json({ message: 'Failed to create user' }, { status: 500 });
 	}
 }

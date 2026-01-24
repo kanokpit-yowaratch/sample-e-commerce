@@ -1,4 +1,3 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { ApiError } from '@/lib/errors';
 import prisma from '@/lib/prisma';
 import { IdParamProps } from '@/types/common';
@@ -6,7 +5,7 @@ import { getOrderById } from '@/lib/order';
 import { Prisma } from '@prisma/client';
 
 // Get Single Order
-export async function GET(req: NextRequest, { params }: IdParamProps) {
+export async function GET(req: Request, { params }: IdParamProps) {
 	const { id } = await params;
 	try {
 		const order = await getOrderById(parseInt(id));
@@ -19,10 +18,10 @@ export async function GET(req: NextRequest, { params }: IdParamProps) {
 		});
 		const orderPaymentHistory = await prisma.orderPaymentHistory.findMany({
 			where: {
-				orderId: order.id
-			}
+				orderId: order.id,
+			},
 		});
-		return NextResponse.json(
+		return Response.json(
 			{
 				order,
 				orderItems,
@@ -32,9 +31,9 @@ export async function GET(req: NextRequest, { params }: IdParamProps) {
 		);
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+			return Response.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+		return Response.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
@@ -58,7 +57,7 @@ export async function PATCH(req: Request, { params }: IdParamProps) {
 			updateData.shippingAddress = body.shipping_address;
 		}
 		if (Object.keys(updateData).length === 0) {
-			return NextResponse.json({ message: 'No valid fields to update' }, { status: 400 });
+			return Response.json({ message: 'No valid fields to update' }, { status: 400 });
 		}
 		const updateOrder = await prisma.order.update({
 			where: { id: orderId },
@@ -67,8 +66,8 @@ export async function PATCH(req: Request, { params }: IdParamProps) {
 		return Response.json(updateOrder, { status: 200 });
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+			return Response.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+		return Response.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }

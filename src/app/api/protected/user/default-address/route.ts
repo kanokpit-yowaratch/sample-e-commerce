@@ -1,4 +1,3 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { ApiError } from '@/lib/errors';
 import prisma from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
@@ -12,8 +11,8 @@ export async function GET() {
 		} else {
 			const user = await prisma.user.findFirst({
 				where: {
-					email: session.user.email ?? ''
-				}
+					email: session.user.email ?? '',
+				},
 			});
 			if (user) {
 				userId = user.id;
@@ -35,16 +34,16 @@ export async function GET() {
 				// isDefault: true
 			},
 		});
-		return NextResponse.json(defaultAddress, { status: 200 });
+		return Response.json(defaultAddress, { status: 200 });
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+			return Response.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+		return Response.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
 	const { name, phone, address1, address2, city, province, zipcode, isDefault } = await req.json();
 	try {
 		const session = await getSession();
@@ -54,8 +53,8 @@ export async function POST(req: NextRequest) {
 		} else {
 			const user = await prisma.user.findFirst({
 				where: {
-					email: session.user.email ?? ''
-				}
+					email: session.user.email ?? '',
+				},
 			});
 			if (user) {
 				userId = user.id;
@@ -63,14 +62,22 @@ export async function POST(req: NextRequest) {
 		}
 		const addressUpdated = await prisma.address.create({
 			data: {
-				name, phone, address1, address2, city, province, zipcode, isDefault, userId
-			}
+				name,
+				phone,
+				address1,
+				address2,
+				city,
+				province,
+				zipcode,
+				isDefault,
+				userId,
+			},
 		});
-		return NextResponse.json(addressUpdated, { status: 201 });
+		return Response.json(addressUpdated, { status: 201 });
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+			return Response.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+		return Response.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }

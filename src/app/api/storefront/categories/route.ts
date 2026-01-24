@@ -1,4 +1,3 @@
-import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { ApiError } from '@/lib/errors';
 
@@ -6,11 +5,11 @@ import { ApiError } from '@/lib/errors';
 export async function GET() {
 	try {
 		const categories = await prisma.category.findMany();
-		return NextResponse.json(categories, { status: 200 });
+		return Response.json(categories, { status: 200 });
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+			return Response.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+		return Response.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }

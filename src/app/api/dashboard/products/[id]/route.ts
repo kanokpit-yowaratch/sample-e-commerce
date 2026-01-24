@@ -1,4 +1,3 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { Prisma } from '@prisma/client';
 import { ApiError } from '@/lib/errors';
 import prisma from '@/lib/prisma';
@@ -6,7 +5,7 @@ import { IdParamProps } from '@/types/common';
 import { getProductById } from '@/lib/product';
 
 // Get Single Product
-export async function GET(req: NextRequest, { params }: IdParamProps) {
+export async function GET(req: Request, { params }: IdParamProps) {
 	const { id } = await params;
 	try {
 		const product = await getProductById(parseInt(id));
@@ -16,7 +15,7 @@ export async function GET(req: NextRequest, { params }: IdParamProps) {
 		const coverData = await prisma.productImage.findFirst({
 			where: { productId: product.id, imageType: 'cover' },
 		});
-		return NextResponse.json(
+		return Response.json(
 			{
 				...product,
 				images: [{ id: coverData?.id ?? 0, filePath: coverData?.filePath ?? '/images/photo-mask.jpg' }],
@@ -25,14 +24,14 @@ export async function GET(req: NextRequest, { params }: IdParamProps) {
 		);
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+			return Response.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+		return Response.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
 // Update Product
-export async function PUT(req: NextRequest, { params }: IdParamProps) {
+export async function PUT(req: Request, { params }: IdParamProps) {
 	const { id } = await params;
 	const productId = parseInt(id);
 	const { name, description, price, categoryId } = await req.json();
@@ -47,18 +46,18 @@ export async function PUT(req: NextRequest, { params }: IdParamProps) {
 			where: { id: productId },
 			data: { name, description, price, categoryId },
 		});
-		return NextResponse.json(productUpdate, { status: 200 });
+		return Response.json(productUpdate, { status: 200 });
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+			return Response.json({ message: error.message }, { status: error.statusCode });
 		}
 		if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
 			const target = error.meta?.target;
 			if (Array.isArray(target) && target.includes('name')) {
-				return NextResponse.json({ message: 'This name is already in use.' }, { status: 400 });
+				return Response.json({ message: 'This name is already in use.' }, { status: 400 });
 			}
 		}
-		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+		return Response.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
@@ -77,14 +76,14 @@ export async function PATCH(req: Request, { params }: IdParamProps) {
 		);
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+			return Response.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+		return Response.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }
 
 // Delete Product
-export async function DELETE(req: NextRequest, { params }: IdParamProps) {
+export async function DELETE(req: Request, { params }: IdParamProps) {
 	const { id } = await params;
 	const productId = parseInt(id);
 
@@ -98,11 +97,11 @@ export async function DELETE(req: NextRequest, { params }: IdParamProps) {
 			where: { id: productId },
 		});
 
-		return NextResponse.json({ message: 'Deleted successfully' }, { status: 200 });
+		return Response.json({ message: 'Deleted successfully' }, { status: 200 });
 	} catch (error) {
 		if (error instanceof ApiError) {
-			return NextResponse.json({ message: error.message }, { status: error.statusCode });
+			return Response.json({ message: error.message }, { status: error.statusCode });
 		}
-		return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+		return Response.json({ message: 'Internal Server Error' }, { status: 500 });
 	}
 }
