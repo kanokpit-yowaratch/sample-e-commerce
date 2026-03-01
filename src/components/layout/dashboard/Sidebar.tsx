@@ -72,7 +72,33 @@ function Sidebar() {
 					</button>
 				</div>
 
-				<nav className="space-y-2">
+				<nav
+					className="space-y-2 overflow-y-auto"
+					style={{
+						maxHeight: 'calc(100vh - 200px)',
+						scrollbarWidth: 'thin',
+						scrollbarColor: 'rgba(255, 255, 255, 0.3) transparent'
+					}}
+				>
+					<style jsx>{`
+						nav::-webkit-scrollbar {
+							width: 6px;
+						}
+						nav::-webkit-scrollbar-track {
+							background: transparent;
+						}
+						nav::-webkit-scrollbar-thumb {
+							background-color: rgba(255, 255, 255, 0.2);
+							border-radius: 3px;
+							transition: background-color 0.2s;
+						}
+						nav::-webkit-scrollbar-thumb:hover {
+							background-color: rgba(255, 255, 255, 0.4);
+						}
+						nav::-webkit-scrollbar-thumb:active {
+							background-color: rgba(255, 255, 255, 0.5);
+						}
+					`}</style>
 					{menus?.map(({ icon: Icon, label, id }) => (
 						<button
 							key={label}
