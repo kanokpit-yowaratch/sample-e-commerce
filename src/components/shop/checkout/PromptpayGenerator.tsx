@@ -59,7 +59,7 @@ export default function PromptpayGenerator({ total }: Readonly<{ total: number }
 
 	if (!isLoaded) {
 		return (
-			<div className="bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+			<div className="bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
 				<div className="text-center">
 					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
 					<p className="text-gray-600">Loading PromptParse...</p>
@@ -85,6 +85,14 @@ export default function PromptpayGenerator({ total }: Readonly<{ total: number }
 							className="rounded-lg shadow-md"
 						/>
 					</div>
+					{/* <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 max-w-xs mb-2">
+						<div className="flex items-center justify-center gap-2">
+							<span className="font-medium text-sm">QR Code data:</span>
+						</div>
+						<div className="text-xs text-blue-700 font-mono break-all text-center mt-1">
+							{payload}
+						</div>
+					</div> */}
 				</div>
 			)}
 		</div>

@@ -3,7 +3,7 @@ import { sampleAddress, ShippingAddress, ShippingAddressState } from '@/types/ad
 
 const useShippingAddressStore = create<ShippingAddressState>()((set) => ({
   address: sampleAddress,
-  shippingFee: 19,
+  shippingFee: 0,
   setShippingFee: (fee: number) => {
     set({ shippingFee: fee });
   },

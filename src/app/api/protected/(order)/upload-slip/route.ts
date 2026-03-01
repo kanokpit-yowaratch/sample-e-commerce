@@ -43,11 +43,12 @@ export async function POST(req: Request) {
 			throw new ApiError('Not Found order', 404);
 		}
 
+		const imageUrl = `${data.data.url}`;
 		const paidAmount = Number(paid_amount) as unknown as Decimal;
 		await prisma.orderPaymentHistory.create({
 			data: {
 				paid_amount: paidAmount,
-				slip_path: `${data.data.url}`,
+				slip_path: imageUrl,
 				orderId: orderId,
 				// payment_method: PaymentMethod.PROMPTPAY,
 				status: 'PAID',
