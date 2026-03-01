@@ -11,8 +11,8 @@ function CategoryGrid({ categories }: Readonly<{ categories: Category[] }>) {
 	const bgGradient = 'bg-gradient-to-tr from-black via-[90%] to-transparent';
 
 	return (
-		<section className="mx-auto px-4 sm:px-6 lg:px-8 py-12">
-			<h2 className="text-2xl font-bold mb-8">Category</h2>
+		<section className="mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-white dark:bg-gray-900">
+			<h2 className="text-2xl font-bold mb-8 text-gray-800 dark:text-gray-200">Category</h2>
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 				{categories?.map((category) => (
 					<Link href={`/category/${category.name}`} key={category.name}>

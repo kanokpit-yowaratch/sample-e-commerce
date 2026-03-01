@@ -6,7 +6,7 @@ import { Mail, MapPin, Phone } from 'lucide-react';
 
 const Footer = () => {
 	return (
-		<footer className="bg-gray-800 text-white py-12 px-4 sm:px-6 lg:px-8">
+		<footer className="bg-gray-800 dark:bg-gray-950 text-white py-12 px-4 sm:px-6 lg:px-8">
 			<div className="max-w-7xl mx-auto">
 				<div className="grid grid-cols-1 md:grid-cols-4 gap-8">
 					<div>
@@ -16,13 +16,13 @@ const Footer = () => {
 							</div>
 							<h4 className="text-xl font-bold">SECM</h4>
 						</div>
-						<p className="text-gray-400 text-sm">
+						<p className="text-gray-400 dark:text-gray-500 text-sm">
 							ศูนย์รวมสมุนไพรไทยคุณภาพ และผลิตภัณฑ์การแพทย์แผนไทยคุณภาพสูง
 						</p>
 					</div>
 					<div>
 						<h5 className="font-bold mb-4">หมวดหมู่</h5>
-						<ul className="space-y-2 text-sm text-gray-400">
+						<ul className="space-y-2 text-sm text-gray-400 dark:text-gray-500">
 							<li>
 								<Link href="#" className="hover:text-white transition-colors">
 									ยาแผนไทย
@@ -42,7 +42,7 @@ const Footer = () => {
 					</div>
 					<div>
 						<h5 className="font-bold mb-4">บริการ</h5>
-						<ul className="space-y-2 text-sm text-gray-400">
+						<ul className="space-y-2 text-sm text-gray-400 dark:text-gray-500">
 							<li>
 								<Link href="#" className="hover:text-white transition-colors">
 									คำปรึกษา
@@ -62,7 +62,7 @@ const Footer = () => {
 					</div>
 					<div>
 						<h5 className="font-semibold mb-4">ติดต่อเรา</h5>
-						<div className="space-y-2 text-gray-400">
+						<div className="space-y-2 text-gray-400 dark:text-gray-500">
 							<div className="flex items-center space-x-2 text-sm">
 								<Phone className="w-4 h-4" />
 								<span>02-123-4567</span>

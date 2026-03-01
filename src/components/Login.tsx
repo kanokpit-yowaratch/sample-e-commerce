@@ -73,7 +73,7 @@ export default function Login() {
 		<div className="container mx-auto px-4 md:px-20 my-4 mb-16 rounded-full w-full">
 			<div className="blackground-body">
 				<form onSubmit={handleSubmit(onSubmitLogin)}>
-					<div className="flex flex-col justify-center items-center bg-white px-4 py-4">
+					<div className="flex flex-col justify-center items-center bg-white dark:bg-gray-800 px-4 py-4">
 						<div className="flex justify-center items-center">
 							<strong className="text-2xl text-blue-600">Admin Login</strong>
 						</div>
@@ -84,7 +84,7 @@ export default function Login() {
 							<div>
 								<input
 									{...register('email')}
-									className="border rounded-md p-2"
+									className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md p-2"
 									placeholder="Name"
 									onChange={handleChange}
 								/>
@@ -95,7 +95,7 @@ export default function Login() {
 									placeholder="Enter your password"
 									{...register('password')}
 									type={'password'}
-									className="border rounded-md p-2"
+									className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md p-2"
 									onChange={handleChange}
 								/>
 							</div>

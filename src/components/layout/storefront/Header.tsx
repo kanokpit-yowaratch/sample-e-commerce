@@ -21,7 +21,7 @@ const Header = () => {
 	};
 
 	return (
-		<header className="bg-fuchsia-950 text-white shadow-sm sticky top-0 z-50">
+		<header className="bg-fuchsia-950 dark:bg-gray-900 text-white shadow-sm sticky top-0 z-50">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div className="flex justify-between items-center h-20">
 					<div className="hidden md:flex items-center space-x-1 flex-1 max-w-2xl">
@@ -76,8 +76,8 @@ const Header = () => {
 										/>
 									</button>
 									{showUserMenu && (
-										<div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border py-2 z-50">
-											<div className="px-4 py-3 border-b">
+										<div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
+											<div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
 												<div className="flex items-center space-x-3">
 													<div className="w-12 h-12 bg-fuchsia-500 rounded-full flex items-center justify-center text-white text-xl">
 														<NextImage
@@ -90,26 +90,26 @@ const Header = () => {
 														/>
 													</div>
 													<div>
-														<p className="font-semibold text-gray-800">{session.user.name}</p>
-														<p className="text-sm text-gray-500">{session.user.email}</p>
+														<p className="font-semibold text-gray-800 dark:text-gray-200">{session.user.name}</p>
+														<p className="text-sm text-gray-500 dark:text-gray-400">{session.user.email}</p>
 													</div>
 												</div>
 											</div>
 
-											<div className="px-4 py-2 flex items-center space-x-3 hover:bg-gray-50 cursor-pointer">
-												<Clock className="w-4 h-4 text-gray-500" />
+											<div className="px-4 py-2 flex items-center space-x-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
+												<Clock className="w-4 h-4 text-gray-500 dark:text-gray-400" />
 												<Link
 													href={'/order-history'}
-													className="text-sm text-gray-700"
+													className="text-sm text-gray-700 dark:text-gray-300"
 													onClick={() => setShowMobileMenu(false)}
 												>ประวัติการสั่งซื้อ</Link>
 											</div>
 
-											<div className="border-t border-t-gray-300">
+											<div className="border-t border-t-gray-300 dark:border-gray-600">
 												<button
 													type="button"
 													onClick={onSignOut}
-													className="w-full px-4 py-2 flex items-center space-x-3 hover:bg-gray-50 text-red-600 cursor-pointer">
+													className="w-full px-4 py-2 flex items-center space-x-3 hover:bg-gray-50 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 cursor-pointer">
 													<LogOut className="w-4 h-4" />
 													<span className="text-sm">ออกจากระบบ</span>
 												</button>
@@ -141,7 +141,7 @@ const Header = () => {
 
 			{/* Mobile Menu */}
 			{showMobileMenu && (
-				<div className="md:hidden bg-white border-t">
+				<div className="md:hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
 					<div className="px-4 py-3 space-y-3">
 						{session ? (
 							<div className="w-full">
@@ -157,28 +157,26 @@ const Header = () => {
 										/>
 									</div>
 									<div>
-										<p className="font-semibold text-gray-800">{session.user.name}</p>
+										<p className="font-semibold text-gray-800 dark:text-gray-200">{session.user.name}</p>
 									</div>
 								</div>
 								<Link
 									href={'/order-history'}
-									className="w-full flex items-center gap-2 py-2 space-x-3 hover:bg-gray-50 text-sm text-gray-700"
+									className="w-full flex items-center gap-2 py-2 space-x-3 hover:bg-gray-50 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300"
 									onClick={() => setShowMobileMenu(false)}
 								>
-									<Clock className="w-4 h-4 text-gray-500" />
+									<Clock className="w-4 h-4 text-gray-500 dark:text-gray-400" />
 									ประวัติการสั่งซื้อ
 								</Link>
 								<div className="flex items-center">
 									<button
-										type="button"
-										onClick={onSignOut} className="w-full text-left py-1 text-red-600 font-medium cursor-pointer">
+										onClick={onSignOut} className="w-full text-left py-1 text-red-600 dark:text-red-400 font-medium cursor-pointer">
 										ออกจากระบบ
 									</button>
 								</div>
 							</div>
 						) : (
 							<button
-								type="button"
 								onClick={openPopup}
 								className="w-full bg-orange-500 text-white py-2 rounded-full font-medium">
 								เข้าสู่ระบบ
