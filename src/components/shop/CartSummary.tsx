@@ -26,10 +26,10 @@ export default function CartSummary({
 
 			<div className="flex justify-between mb-2 font-medium">
 				<span>ยอดรวม</span>
-				<span className="text-orange-500">฿{total.toFixed(2)}</span>
+				<span className="text-emerald-600">฿{total.toFixed(2)}</span>
 			</div>
 
-			<button onClick={onCheckout} className="w-full bg-orange-500 text-white rounded-md py-3 font-medium cursor-pointer">
+			<button onClick={onCheckout} className="w-full bg-emerald-600 text-white rounded-md py-3 font-medium cursor-pointer">
 				ดำเนินการชำระเงิน({itemCount})
 			</button>
 		</div>

@@ -4,6 +4,7 @@ import { kanit, prompt } from './fonts';
 import './globals.css';
 import AuthProvider from '@/components/auth-provider';
 import ReactQueryProvider from '@/contexts/QueryProvider';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -29,9 +30,11 @@ export default function RootLayout({
 		<html lang="en">
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} ${kanit.className} ${prompt.className} antialiased`}>
-				<AuthProvider>
-					<ReactQueryProvider>{children}</ReactQueryProvider>
-				</AuthProvider>
+				<ThemeProvider>
+					<AuthProvider>
+						<ReactQueryProvider>{children}</ReactQueryProvider>
+					</AuthProvider>
+				</ThemeProvider>
 			</body>
 		</html>
 	);

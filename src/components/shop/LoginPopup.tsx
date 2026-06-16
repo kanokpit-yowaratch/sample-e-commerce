@@ -20,8 +20,8 @@ const LoginPopup = () => {
 				</button>
 
 				<div className="flex justify-center mb-6">
-					<div className="bg-gray-900 dark:bg-gray-700 rounded-full p-4 w-16 h-16 flex items-center justify-center">
-						<div className="text-blue-500 font-bold text-2xl">Logo</div>
+					<div className="bg-emerald-600 rounded-full p-4 w-16 h-16 flex items-center justify-center">
+						<div className="text-white font-bold text-2xl">Logo</div>
 					</div>
 				</div>
 

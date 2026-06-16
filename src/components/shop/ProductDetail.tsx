@@ -136,14 +136,14 @@ export default function ProductDetailCp({ product }: Readonly<ProductParams>) {
 
 					<div className="mt-6 p-4 bg-gray-50 rounded">
 						<div className="flex items-center">
-							<div className="text-3xl font-bold text-fuchsia-500">{product?.price} ฿</div>
-							{/* <div className="text-3xl font-bold text-fuchsia-500">
+							<div className="text-3xl font-bold text-emerald-600">{product?.price} ฿</div>
+							{/* <div className="text-3xl font-bold text-emerald-600">
                 {product.currentPrice}
               </div>
               <div className="ml-4 line-through text-gray-400">
                 {product.originalPrice}
               </div>
-              <div className="ml-2 text-fuchsia-500">
+              <div className="ml-2 text-emerald-600">
                 -{product.discount}
               </div> */}
 						</div>
@@ -167,7 +167,7 @@ export default function ProductDetailCp({ product }: Readonly<ProductParams>) {
 						<div className="flex items-center">
 							<span className="w-48 text-gray-500">Shopping Guarantee</span>
 							<div className="flex items-center">
-								<div className="w-5 h-5 text-fuchsia-500 mr-2">♥</div>
+								<div className="w-5 h-5 text-emerald-600 mr-2">♥</div>
 								<span>Cheapest on Shopee · Cash On Delivery</span>
 							</div>
 						</div>
@@ -207,13 +207,13 @@ export default function ProductDetailCp({ product }: Readonly<ProductParams>) {
 
 					<div className="mt-8 flex gap-4">
 						<button
-							className="flex-1 flex items-center justify-center gap-2 px-6 py-3 border border-fuchsia-500 text-fuchsia-500 rounded-sm hover:bg-fuchsia-50 transition-colors"
+							className="flex-1 flex items-center justify-center gap-2 px-6 py-3 border border-emerald-600 text-emerald-600 rounded-sm hover:bg-emerald-50 transition-colors"
 							onClick={() => addProductToCart()}>
 							<ShoppingCartIcon className="w-5 h-5" />
 							Add To Cart
 						</button>
 						<button
-							className={`flex-1 px-6 py-3 text-white rounded-sm bg-fuchsia-500 hover:bg-fuchsia-600 cursor-pointer transition-colors`}
+							className={`flex-1 px-6 py-3 text-white rounded-sm bg-emerald-600 hover:bg-emerald-700 cursor-pointer transition-colors`}
 							onClick={() => onCheckOut()}
 						>
 							Buy Now

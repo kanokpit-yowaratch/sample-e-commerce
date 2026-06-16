@@ -1,6 +1,6 @@
-'use client'; // Client Component
+'use client';
 
-import { createContext, ReactNode, useContext, useMemo, useState } from 'react';
+import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 type Theme = 'light' | 'dark';
 
@@ -9,23 +9,29 @@ interface ThemeContextType {
 	toggleTheme: () => void;
 }
 
-// 1. Context
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-// 2. Provider สำหรับแชร์ข้อมูล
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-	const [theme, setTheme] = useState<Theme>('dark');
+	const [theme, setTheme] = useState<Theme>('light');
 
-	const toggleTheme = () => {
+	useEffect(() => {
+		const root = document.documentElement;
+		if (theme === 'dark') {
+			root.classList.add('dark');
+		} else {
+			root.classList.remove('dark');
+		}
+	}, [theme]);
+
+	const toggleTheme = useCallback(() => {
 		setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
-	};
+	}, []);
 
-	const contextValue = useMemo(() => ({ theme, toggleTheme }), [theme]);
+	const contextValue = useMemo(() => ({ theme, toggleTheme }), [theme, toggleTheme]);
 
 	return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>;
 };
 
-// 3. Hook สำหรับเรียกใช้ Context
 export const useTheme = (): ThemeContextType => {
 	const context = useContext(ThemeContext);
 	if (!context) {

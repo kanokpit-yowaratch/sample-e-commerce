@@ -45,7 +45,7 @@ export default function CartItemComponent({ item, onQuantityChange, onRemove }: 
 						</button>
 					</div>
 					<div className="flex items-center justify-between mt-2">
-						<div className="text-orange-500 font-medium">฿{item.price.toFixed(2)}</div>
+						<div className="text-emerald-600 font-medium">฿{item.price.toFixed(2)}</div>
 
 						<div className="flex items-center gap-2">
 							<button

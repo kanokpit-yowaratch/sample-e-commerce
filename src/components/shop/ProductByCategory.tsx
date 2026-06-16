@@ -16,7 +16,7 @@ export default function ProductByCategory({ name }: Readonly<NameParams>) {
 
 	return (
 		<div className="max-w-6xl mx-auto py-6">
-			<div className="flex items-center text-fuchsia-500 font-medium mb-3">
+			<div className="flex items-center text-emerald-500 font-medium mb-3">
 				<span>{decodeURIComponent(name)}</span>
 			</div>
 			<div className="flex flex-wrap">
@@ -26,24 +26,24 @@ export default function ProductByCategory({ name }: Readonly<NameParams>) {
 
 						<div className="flex">
 							<button
-								className={`px-6 py-2 ${activeTab === 'popular' ? 'bg-fuchsia-500 text-white' : 'bg-white text-gray-700'}`}
+								className={`px-6 py-2 ${activeTab === 'popular' ? 'bg-emerald-500 text-white' : 'bg-white text-gray-700'}`}
 								onClick={() => setActiveTab('popular')}>
 								Popular
 							</button>
 							<button
-								className={`px-6 py-2 ${activeTab === 'latest' ? 'bg-fuchsia-500 text-white' : 'bg-white text-gray-700'}`}
+								className={`px-6 py-2 ${activeTab === 'latest' ? 'bg-emerald-500 text-white' : 'bg-white text-gray-700'}`}
 								onClick={() => setActiveTab('latest')}>
 								Latest
 							</button>
 							<button
-								className={`px-6 py-2 ${activeTab === 'topSales' ? 'bg-fuchsia-500 text-white' : 'bg-white text-gray-700'}`}
+								className={`px-6 py-2 ${activeTab === 'topSales' ? 'bg-emerald-500 text-white' : 'bg-white text-gray-700'}`}
 								onClick={() => setActiveTab('topSales')}>
 								Top Sales
 							</button>
 						</div>
 
 						<div className="ml-auto flex items-center">
-							<span className="text-fuchsia-500">1</span>
+							<span className="text-emerald-500">1</span>
 							<span className="text-gray-500">/9</span>
 							<button className="ml-4 px-2 py-1 bg-white text-gray-400">
 								<ChevronLeft size={16} />
@@ -73,7 +73,7 @@ export default function ProductByCategory({ name }: Readonly<NameParams>) {
 											{product.name} {product.description}
 										</div>
 										<div className="flex items-center mb-1">
-											<span className="text-fuchsia-500 font-medium">฿{product.price}</span>
+											<span className="text-emerald-500 font-medium">฿{product.price}</span>
 										</div>
 									</div>
 								</div>

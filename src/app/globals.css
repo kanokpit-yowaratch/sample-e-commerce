@@ -1,9 +1,5 @@
 @import 'tailwindcss';
 
-:root {
-	--glow-color: 10px -5px 10px rgba(255, 255, 0, 1);
-}
-
 body {
 	font-family: Arial, Helvetica, sans-serif;
 }

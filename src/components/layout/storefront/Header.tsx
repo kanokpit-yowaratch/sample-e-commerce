@@ -26,7 +26,7 @@ const Header = () => {
 	};
 
 	return (
-		<header className="bg-fuchsia-950 dark:bg-gray-900 text-white shadow-sm sticky top-0 z-50">
+		<header className="bg-emerald-800 text-white shadow-sm sticky top-0 z-50">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div className="flex justify-between items-center h-20">
 					<div className="hidden md:flex items-center space-x-1 flex-1 max-w-2xl">
@@ -89,7 +89,7 @@ const Header = () => {
 										<div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
 											<div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
 												<div className="flex items-center space-x-3">
-													<div className="w-12 h-12 bg-fuchsia-500 rounded-full flex items-center justify-center text-white text-xl">
+													<div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center text-white text-xl">
 														<NextImage
 															src={session.user.image ?? `/images/user.png`}
 															width={40}
@@ -134,7 +134,7 @@ const Header = () => {
 								<button
 									type="button"
 									onClick={openPopup}
-									className="bg-fuchsia-700 text-white px-4 py-2 rounded-lg hover:bg-fuchsia-800 transition-colors cursor-pointer">
+									className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors cursor-pointer">
 									Sign In
 								</button>
 							)}
