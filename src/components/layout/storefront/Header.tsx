@@ -15,8 +15,13 @@ const Header = () => {
 	const { items } = useCartStore();
 	const { openPopup } = useLoginStore();
 
-	const onSignOut = () => {
+	const onSignOut = async () => {
 		localStorage.removeItem('session_expiry');
+		try {
+			await fetch('/api/auth/logout');
+		} catch {
+			// fallback to next-auth signOut
+		}
 		signOut();
 	};
 
@@ -37,12 +42,18 @@ const Header = () => {
 						</Link>
 						<Link href={'https://www.facebook.com/konbakhiancode'}>
 							<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" height="36" viewBox="0 0 48 48">
-								<path fill="#039be5" d="M24 5A19 19 0 1 0 24 43A19 19 0 1 0 24 5Z"></path><path fill="#fff" d="M26.572,29.036h4.917l0.772-4.995h-5.69v-2.73c0-2.075,0.678-3.915,2.619-3.915h3.119v-4.359c-0.548-0.074-1.707-0.236-3.897-0.236c-4.573,0-7.254,2.415-7.254,7.917v3.323h-4.701v4.995h4.701v13.729C22.089,42.905,23.032,43,24,43c0.875,0,1.729-0.08,2.572-0.194V29.036z"></path>
+								<path fill="#039be5" d="M24 5A19 19 0 1 0 24 43A19 19 0 1 0 24 5Z"></path>
+								<path
+									fill="#fff"
+									d="M26.572,29.036h4.917l0.772-4.995h-5.69v-2.73c0-2.075,0.678-3.915,2.619-3.915h3.119v-4.359c-0.548-0.074-1.707-0.236-3.897-0.236c-4.573,0-7.254,2.415-7.254,7.917v3.323h-4.701v4.995h4.701v13.729C22.089,42.905,23.032,43,24,43c0.875,0,1.729-0.08,2.572-0.194V29.036z"></path>
 							</svg>
 						</Link>
 						<Link href={'https://www.youtube.com/@NextJSWorkshop/videos'}>
 							<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="36" viewBox="0 0 48 48">
-								<path fill="#FF3D00" d="M43.2,33.9c-0.4,2.1-2.1,3.7-4.2,4c-3.3,0.5-8.8,1.1-15,1.1c-6.1,0-11.6-0.6-15-1.1c-2.1-0.3-3.8-1.9-4.2-4C4.4,31.6,4,28.2,4,24c0-4.2,0.4-7.6,0.8-9.9c0.4-2.1,2.1-3.7,4.2-4C12.3,9.6,17.8,9,24,9c6.2,0,11.6,0.6,15,1.1c2.1,0.3,3.8,1.9,4.2,4c0.4,2.3,0.9,5.7,0.9,9.9C44,28.2,43.6,31.6,43.2,33.9z"></path><path fill="#FFF" d="M20 31L20 17 32 24z"></path>
+								<path
+									fill="#FF3D00"
+									d="M43.2,33.9c-0.4,2.1-2.1,3.7-4.2,4c-3.3,0.5-8.8,1.1-15,1.1c-6.1,0-11.6-0.6-15-1.1c-2.1-0.3-3.8-1.9-4.2-4C4.4,31.6,4,28.2,4,24c0-4.2,0.4-7.6,0.8-9.9c0.4-2.1,2.1-3.7,4.2-4C12.3,9.6,17.8,9,24,9c6.2,0,11.6,0.6,15,1.1c2.1,0.3,3.8,1.9,4.2,4c0.4,2.3,0.9,5.7,0.9,9.9C44,28.2,43.6,31.6,43.2,33.9z"></path>
+								<path fill="#FFF" d="M20 31L20 17 32 24z"></path>
 							</svg>
 						</Link>
 					</div>
@@ -64,8 +75,7 @@ const Header = () => {
 									<button
 										type="button"
 										className="flex items-center rounded-full cursor-pointer"
-										onClick={() => setShowUserMenu(!showUserMenu)}
-									>
+										onClick={() => setShowUserMenu(!showUserMenu)}>
 										<NextImage
 											src={session.user.image ?? `/images/user.png`}
 											width={40}
@@ -90,7 +100,9 @@ const Header = () => {
 														/>
 													</div>
 													<div>
-														<p className="font-semibold text-gray-800 dark:text-gray-200">{session.user.name}</p>
+														<p className="font-semibold text-gray-800 dark:text-gray-200">
+															{session.user.name}
+														</p>
 														<p className="text-sm text-gray-500 dark:text-gray-400">{session.user.email}</p>
 													</div>
 												</div>
@@ -101,8 +113,9 @@ const Header = () => {
 												<Link
 													href={'/order-history'}
 													className="text-sm text-gray-700 dark:text-gray-300"
-													onClick={() => setShowMobileMenu(false)}
-												>ประวัติการสั่งซื้อ</Link>
+													onClick={() => setShowMobileMenu(false)}>
+													ประวัติการสั่งซื้อ
+												</Link>
 											</div>
 
 											<div className="border-t border-t-gray-300 dark:border-gray-600">
@@ -128,11 +141,7 @@ const Header = () => {
 						</div>
 					</div>
 					<div className="w-full flex justify-end md:hidden">
-						<button
-							type="button"
-							className="text-white"
-							onClick={() => setShowMobileMenu(!showMobileMenu)}
-						>
+						<button type="button" className="text-white" onClick={() => setShowMobileMenu(!showMobileMenu)}>
 							{showMobileMenu ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
 						</button>
 					</div>
@@ -163,14 +172,14 @@ const Header = () => {
 								<Link
 									href={'/order-history'}
 									className="w-full flex items-center gap-2 py-2 space-x-3 hover:bg-gray-50 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300"
-									onClick={() => setShowMobileMenu(false)}
-								>
+									onClick={() => setShowMobileMenu(false)}>
 									<Clock className="w-4 h-4 text-gray-500 dark:text-gray-400" />
 									ประวัติการสั่งซื้อ
 								</Link>
 								<div className="flex items-center">
 									<button
-										onClick={onSignOut} className="w-full text-left py-1 text-red-600 dark:text-red-400 font-medium cursor-pointer">
+										onClick={onSignOut}
+										className="w-full text-left py-1 text-red-600 dark:text-red-400 font-medium cursor-pointer">
 										ออกจากระบบ
 									</button>
 								</div>
