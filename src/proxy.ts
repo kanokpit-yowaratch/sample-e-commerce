@@ -7,7 +7,7 @@ const PROTECTED_ROUTES = {
 	pages: ['/order-history', '/dashboard'],
 	backoffice: ['/dashboard'],
 	apis: ['/api/dashboard/', '/api/protected/'],
-	adminApis: ['/api/dashboard/report/'],
+	adminApis: ['/api/dashboard/'],
 } as const;
 
 const RESPONSES = {

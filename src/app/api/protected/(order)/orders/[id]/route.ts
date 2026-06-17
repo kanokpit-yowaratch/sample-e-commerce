@@ -1,3 +1,5 @@
+import { getSession } from '@/lib/auth';
+import { checkUserExists } from '@/lib/user';
 import { ApiError } from '@/lib/errors';
 import prisma from '@/lib/prisma';
 import { IdParamProps } from '@/types/common';
@@ -8,9 +10,18 @@ import { Prisma } from '@prisma/client';
 export async function GET(req: Request, { params }: IdParamProps) {
 	const { id } = await params;
 	try {
+		const userData = await getSession();
+		const existUser = await checkUserExists(userData?.user?.email ?? '');
+		if (!existUser) {
+			throw new ApiError('User not found', 404);
+		}
+
 		const order = await getOrderById(parseInt(id));
 		if (!order) {
 			throw new ApiError('Not Found order', 404);
+		}
+		if (order.userId !== existUser.id) {
+			throw new ApiError('Forbidden', 403);
 		}
 		const orderItems = await prisma.orderItem.findMany({
 			where: { orderId: order.id },
@@ -40,9 +51,27 @@ export async function GET(req: Request, { params }: IdParamProps) {
 // Update Order some fields
 export async function PATCH(req: Request, { params }: IdParamProps) {
 	try {
+		const userData = await getSession();
+		const existUser = await checkUserExists(userData?.user?.email ?? '');
+		if (!existUser) {
+			throw new ApiError('User not found', 404);
+		}
+
 		const body = await req.json();
 		const { id } = await params;
 		const orderId = parseInt(id);
+
+		const order = await prisma.order.findUnique({
+			where: { id: orderId },
+			select: { userId: true },
+		});
+		if (!order) {
+			throw new ApiError('Not Found order', 404);
+		}
+		if (order.userId !== existUser.id) {
+			throw new ApiError('Forbidden', 403);
+		}
+
 		const updateData: Prisma.OrderUpdateInput = {};
 		if (body.order_number !== undefined) {
 			updateData.orderNumber = body.order_number;

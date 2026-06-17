@@ -5,9 +5,9 @@ import { registerSchema } from '@/lib/schemas/register-schema';
 
 export async function POST(req: Request) {
 	try {
-		const { email, password, name, phone, role } = await req.json();
+		const { email, password, name, phone } = await req.json();
 
-		const validationResult = registerSchema.safeParse({ email, password, name, phone, role });
+		const validationResult = registerSchema.safeParse({ email, password, name, phone });
 		if (!validationResult.success) {
 			throw new ApiError('Invalid input', 400);
 		}
@@ -31,7 +31,15 @@ export async function POST(req: Request) {
 				name,
 				createdAt: new Date(),
 				updatedAt: new Date(),
-				role,
+				role: 'customer',
+			},
+			select: {
+				id: true,
+				email: true,
+				name: true,
+				phone: true,
+				role: true,
+				createdAt: true,
 			},
 		});
 
