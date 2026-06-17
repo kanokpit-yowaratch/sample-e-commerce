@@ -4,8 +4,12 @@ import { generateOrderNumber } from '@/lib/order';
 import prisma from '@/lib/prisma';
 import { checkUserExists } from '@/lib/user';
 import { OrderItemRequest } from '@/types/order';
+import { rateLimitMiddleware, RATE_LIMIT } from '@/lib/rate-limiter';
 
 export async function POST(req: Request) {
+	const limitResponse = await rateLimitMiddleware(RATE_LIMIT.createOrder)(req);
+	if (limitResponse) return limitResponse;
+
 	try {
 		const userData = await getSession();
 		const existUser = await checkUserExists(userData?.user?.email ?? '');

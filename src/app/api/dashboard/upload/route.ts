@@ -2,8 +2,12 @@ import { ApiError } from '@/lib/errors';
 import prisma from '@/lib/prisma';
 import { ImageType, ProductImage } from '@prisma/client';
 import { getProductById } from '@/lib/product';
+import { rateLimitMiddleware, RATE_LIMIT } from '@/lib/rate-limiter';
 
 export async function POST(req: Request) {
+	const limitResponse = await rateLimitMiddleware(RATE_LIMIT.uploadImage)(req);
+	if (limitResponse) return limitResponse;
+
 	const formData = await req.formData();
 	const file = formData.get('file') as File;
 	const pId = formData.get('productId') as string;

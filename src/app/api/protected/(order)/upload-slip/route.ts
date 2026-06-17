@@ -4,8 +4,12 @@ import { getOrderById } from '@/lib/order';
 import { Decimal } from '@prisma/client/runtime/library';
 import { getSession } from '@/lib/auth';
 import { checkUserExists } from '@/lib/user';
+import { rateLimitMiddleware, RATE_LIMIT } from '@/lib/rate-limiter';
 
 export async function POST(req: Request) {
+	const limitResponse = await rateLimitMiddleware(RATE_LIMIT.uploadSlip)(req);
+	if (limitResponse) return limitResponse;
+
 	const formData = await req.formData();
 	const file = formData.get('image') as File;
 	const oId = formData.get('order_id') as string;

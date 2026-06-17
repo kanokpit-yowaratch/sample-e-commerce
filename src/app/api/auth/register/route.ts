@@ -2,8 +2,12 @@ import prisma from '@/lib/prisma';
 import { checkUserExists, hashPassword } from '@/lib/user';
 import { ApiError } from '@/lib/errors';
 import { registerSchema } from '@/lib/schemas/register-schema';
+import { rateLimitMiddleware, RATE_LIMIT } from '@/lib/rate-limiter';
 
 export async function POST(req: Request) {
+	const limitResponse = await rateLimitMiddleware(RATE_LIMIT.register)(req);
+	if (limitResponse) return limitResponse;
+
 	try {
 		const { email, password, name, phone } = await req.json();
 
