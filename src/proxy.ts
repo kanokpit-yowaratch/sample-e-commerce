@@ -105,6 +105,10 @@ export default withAuth(async function middleware(req) {
 
 	concurrent.release();
 	return NextResponse.next();
+}, {
+	callbacks: {
+		authorized: () => true,
+	},
 });
 
 export const config = {
