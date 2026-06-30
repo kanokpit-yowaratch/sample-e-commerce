@@ -11,7 +11,7 @@ import {
 
 // Configuration constants
 const PROTECTED_ROUTES = {
-	pages: ['/order-history', '/dashboard'],
+	pages: ['/order-history', '/dashboard', '/payment-request'],
 	backoffice: ['/dashboard'],
 	apis: ['/api/dashboard/', '/api/protected/'],
 	adminApis: ['/api/dashboard/'],
@@ -112,5 +112,5 @@ export default withAuth(async function middleware(req) {
 });
 
 export const config = {
-	matcher: ['/api/:path*', '/dashboard/:path*', '/order-history/:path*'],
+	matcher: ['/api/:path*', '/dashboard/:path*', '/order-history/:path*', '/payment-request'],
 };

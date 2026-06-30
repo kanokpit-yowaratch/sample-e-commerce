@@ -7,6 +7,6 @@ export type CheckoutProps = {
 export interface BuyNowState {
   items: ProductCart[];
   total: number;
-  addToBuyNow: (product: ProductCart) => Promise<void>;
+  addToBuyNow: (product: ProductCart) => void;
   reset: () => void;
 }

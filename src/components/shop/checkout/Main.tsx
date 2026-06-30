@@ -24,7 +24,7 @@ function CheckoutMainPage({ source }: Readonly<CheckoutProps>) {
   const { items: itemsFromCart } = useCartStore();
   const { items: itemsFromBuyNow } = useBuyNowStore();
   const { address, shippingFee, setShippingAddress } = useShippingAddressStore();
-  const { addToCheckout, updateOrder, orderId, order_status, updatePaidAmount } = useCheckoutStore();
+  const { addToCheckout, updateOrder } = useCheckoutStore();
   const [isCheckoutLoading, setIsCheckoutLoading] = useState<boolean>(false);
   const { mutate: mutateCreate } = useCreateItem<OrderRequest, OrderResponse>('orders');
   const [products, setProducts] = useState<ProductCart[]>([]);
@@ -32,6 +32,7 @@ function CheckoutMainPage({ source }: Readonly<CheckoutProps>) {
   const [subtotal, setSubtotal] = useState(0);
   const [total, setTotal] = useState(0);
   const [isGoUploadSlip, setIsGoUploadSlip] = useState(false);
+  const [orderConfirmed, setOrderConfirmed] = useState(false);
   const { openPopup } = useLoginStore();
   const router = useRouter();
 
@@ -88,6 +89,8 @@ function CheckoutMainPage({ source }: Readonly<CheckoutProps>) {
         onSuccess: (response) => {
           addToCheckout(requestOrder);
           updateOrder(response.id);
+          setOrderConfirmed(true);
+          setIsCheckoutLoading(false);
         },
         onError: (error) => {
           const message = error instanceof Error ? error.message : 'Create order failed.';
@@ -99,7 +102,6 @@ function CheckoutMainPage({ source }: Readonly<CheckoutProps>) {
   };
 
   const onGoUploadSlip = () => {
-    updatePaidAmount(total);
     setIsGoUploadSlip(true);
     router.push('/payment-request');
   };
@@ -187,7 +189,7 @@ function CheckoutMainPage({ source }: Readonly<CheckoutProps>) {
                   <span className="text-blue-600">฿{total.toLocaleString()}</span>
                 </div>
               </div>
-              {!orderId ? (
+              {!orderConfirmed ? (
                 <>
                   <div className="flex flex-col mb-2 text-sm">
                     {!validateAddress(address) && (
@@ -209,7 +211,7 @@ function CheckoutMainPage({ source }: Readonly<CheckoutProps>) {
 
               ) : (
                 <>
-                  {(total > 0 || order_status !== 'PROCESSING') && <PromptpayGenerator total={total} />}
+                  <PromptpayGenerator total={total} />
                   <button
                     type="button"
                     className={`w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none`}
