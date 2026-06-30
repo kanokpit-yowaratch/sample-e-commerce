@@ -1,10 +1,20 @@
 # Sample E-Commerce
 
-Small System E-Commerce by Next.js
+Small System E-Commerce by Next.js 16
 
 ## Tech Stack
 
-`React` `TypeScript` `NextJS` `TanStack Query` `Tailwind CSS v4`
+`React` `TypeScript` `Next.js 16` `TanStack Query` `Tailwind CSS v4` `Prisma` `Zustand`
+
+## Proxy (Next.js 16 Middleware)
+
+This project uses `src/proxy.ts` (Next.js 16 replaces `middleware.ts` with `proxy.ts`) for:
+
+- **DDoS protection** — rate limiting, suspicious request detection, body size check, concurrent request tracking
+- **Authentication** — protects `/api/protected/*`, `/api/dashboard/*`, `/dashboard/*`, `/order-history/*`, `/payment-request`
+- **Role-based access** — restricts `/dashboard/*` and `/api/dashboard/*` to `admin` / `store` roles
+
+See `src/proxy.ts` for the full config.
 
 ## Environment configuration
 
@@ -44,11 +54,9 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
 # Deployment
 
-When deploying your Next.js 15 + Prisma application to Vercel, follow these best practices for database migrations and Prisma setup.
+When deploying your Next.js 16 + Prisma application to Vercel, follow these best practices for database migrations and Prisma setup.
 
 ## Setup in `package.json`
 
