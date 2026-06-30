@@ -10,8 +10,17 @@ import useCheckoutStore from '@/stores/zustand/useCheckoutStore';
 import { useUpload } from '@/hooks/useQueryProtected';
 import { getImageSrc } from '@/lib/common';
 import { read } from '@/lib/apiFetcher';
-import { X, CloudUpload, UploadCloud, TriangleAlert } from 'lucide-react';
+import {
+	X,
+	CloudUpload,
+	UploadCloud,
+	TriangleAlert,
+	CheckCircle2,
+	Calendar,
+	Clock,
+} from 'lucide-react';
 import { OrderStatus } from '@prisma/client';
+import type { VerifyResult } from '@/types/slip';
 
 const PROTECTED_API = '/api/protected';
 const allowedImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
@@ -25,8 +34,9 @@ const UploadSlip = () => {
 	const [imagePath, setImagePath] = useState<string>('');
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
-	const { mutate: mutateUpload } = useUpload('upload-slip');
+	const { mutate: mutateUpload } = useUpload<{ message: string; verify?: VerifyResult }>('upload-slip');
 	const [requestSuccess, setRequestSuccess] = useState(false);
+	const [verifyResult, setVerifyResult] = useState<VerifyResult | null>(null);
 	const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
 		const selectedFile = acceptedFiles[0];
 		setError(null);
@@ -119,13 +129,14 @@ const UploadSlip = () => {
 		clearCart();
 		resetBuyNow();
 		resetOrder();
-	}
+	};
 
 	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 
 		setError(null);
 		setRequestSuccess(false);
+		setVerifyResult(null);
 
 		if (!imageFile) {
 			setError('Please select file.');
@@ -140,8 +151,11 @@ const UploadSlip = () => {
 		formData.append('paid_amount', `${paid_amount}`);
 		formData.append('status', `PROCESSING`);
 		mutateUpload(formData, {
-			onSuccess: () => {
+			onSuccess: (data) => {
 				clearState();
+				if (data?.verify) {
+					setVerifyResult(data.verify);
+				}
 			},
 			onError: (error) => {
 				console.log(error);
@@ -180,7 +194,7 @@ const UploadSlip = () => {
 					className={`w-full p-2 relative border-2 border-dashed border-gray-400 rounded-md cursor-pointer ${isDragActive ? 'bg-blue-300/5' : ''} ${error ? 'border-red-700 border-2 bg-red-600/5' : ''} transition-all duration-200 ease-in-out`}>
 					<input {...getInputProps()} aria-label="File upload" />
 
-					{(!imageFile && !imagePath) && (
+					{!imageFile && !imagePath && (
 						<div className="flex flex-col justify-center items-center text-sm">
 							<CloudUpload className="w-12 h-12 mx-auto text-blue-800 mb-4" />
 							<p className="text-blue-900 font-medium mb-2">คลิกเลือกรูปหรือลากวาง</p>
@@ -190,9 +204,7 @@ const UploadSlip = () => {
 
 					{(imageFile || imagePath) && (
 						<div className="relative">
-							<div className="flex items-center justify-center">
-								{getFilePreview()}
-							</div>
+							<div className="flex items-center justify-center">{getFilePreview()}</div>
 							<button
 								onClick={(e) => {
 									e.stopPropagation();
@@ -226,6 +238,105 @@ const UploadSlip = () => {
 					</button>
 				)}
 			</form>
+
+			{verifyResult && (
+				<div className="mt-4 w-full bg-white rounded-2xl border border-gray-200 overflow-hidden">
+					<div
+						className={`border-b p-4 flex items-center gap-3 ${verifyResult.comparison?.overall ? 'bg-emerald-50 border-emerald-200' : 'bg-amber-50 border-amber-200'}`}>
+						{verifyResult.comparison?.overall ? (
+							<CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+						) : (
+							<TriangleAlert className="w-5 h-5 text-amber-600 shrink-0" />
+						)}
+						<div>
+							<p
+								className={`text-sm font-semibold ${verifyResult.comparison?.overall ? 'text-emerald-800' : 'text-amber-800'}`}>
+								{verifyResult.comparison?.overall ? 'สลิปผ่านการตรวจสอบแล้ว' : 'สลิปรอการตรวจสอบจากร้านค้า'}
+							</p>
+						</div>
+						<span
+							className={`ml-auto text-xs font-bold px-3 py-1 rounded-full ${verifyResult.comparison?.overall ? 'text-emerald-700 bg-emerald-100' : 'text-amber-700 bg-amber-100'}`}>
+							{verifyResult.comparison?.overall ? 'VERIFIED' : 'PENDING'}
+						</span>
+					</div>
+
+					{verifyResult.comparison && !verifyResult.comparison.overall && (
+						<div className="mx-5 mt-4 p-3 bg-white border border-amber-500 rounded-xl">
+							<ul className="space-y-1 text-xs text-amber-800">
+								{!verifyResult.comparison.amount.match && (
+									<li className="flex items-center gap-2">
+										<X className="w-3.5 h-3.5 text-red-500 shrink-0" />
+										จำนวนเงินไม่ตรง: สลิป {verifyResult.comparison.amount.slipAmount.toLocaleString()} บาท ≠
+										ออเดอร์ {verifyResult.comparison.amount.orderAmount.toLocaleString()} บาท
+									</li>
+								)}
+								{!verifyResult.comparison.dateTime.valid && (
+									<li className="flex items-center gap-2">
+										<X className="w-3.5 h-3.5 text-red-500 shrink-0" />
+										วันเวลาที่โอนต้องไม่อยู่ก่อนวันที่สั่งซื้อ
+									</li>
+								)}
+							</ul>
+						</div>
+					)}
+
+					{verifyResult.data?.amountInSlip != null && (
+						<div className="p-5 space-y-5">
+							<div className="text-center border-b border-dashed border-gray-200 pb-4">
+								<p className="text-xs text-gray-500 font-medium">จำนวนเงินที่ทำรายการโอน</p>
+								<p className="text-2xl font-bold text-gray-900 mt-1">
+									฿
+									{(verifyResult.data?.amountInSlip ?? 0).toLocaleString('th-TH', {
+										minimumFractionDigits: 2,
+										maximumFractionDigits: 2,
+									})}
+									<span className="text-sm text-gray-400 font-medium ml-1">THB</span>
+								</p>
+							</div>
+
+							{(() => {
+								const dateStr = verifyResult.data?.rawSlip?.date;
+								const dt = dateStr ? new Date(dateStr) : null;
+								return (
+									<div className="flex items-center gap-4 text-sm border-t border-gray-200 pt-4">
+										<div className="flex items-center gap-2">
+											<Calendar className="w-4 h-4 text-gray-400" />
+											<div>
+												<p className="text-xs text-gray-500">วันที่</p>
+												<p className="text-sm font-medium text-gray-800">
+													{dt
+														? dt.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })
+														: 'ไม่ระบุ'}
+												</p>
+											</div>
+										</div>
+										<div className="flex items-center gap-2">
+											<Clock className="w-4 h-4 text-gray-400" />
+											<div>
+												<p className="text-xs text-gray-500">เวลา</p>
+												<p className="text-sm font-medium text-gray-800">
+													{dt ? dt.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) : 'ไม่ระบุ'} น.
+												</p>
+											</div>
+										</div>
+									</div>
+								);
+							})()}
+
+							{verifyResult.data?.rawSlip?.transRef && (
+								<div className="bg-gray-50 rounded-xl p-3 border border-gray-200 flex items-center justify-between gap-3">
+									<div className="min-w-0">
+										<p className="text-xs text-gray-500 font-semibold">เลขอ้างอิง (Transaction Ref)</p>
+										<p className="text-sm font-mono font-bold text-gray-700 truncate">
+											{verifyResult.data.rawSlip.transRef}
+										</p>
+									</div>
+								</div>
+							)}
+						</div>
+					)}
+				</div>
+			)}
 		</div>
 	);
 };

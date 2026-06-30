@@ -35,6 +35,10 @@ UPLOAD_API="[API_UPLOAD_URL]"
 # API Upload Key
 UPLOAD_KEY="[API_UPLOAD_KEY]"
 
+# EasySlip API
+EASYSLIP_API_URL="https://api.easyslip.com/v2/verify/bank"
+EASYSLIP_API_KEY="[EASYSLIP_API_KEY]"
+
 SALT_ROUNDS="10"
 ```
 
